@@ -1,0 +1,906 @@
+training model on cw.npy
+Model cw.npy, epoch 0, train loss: 460.2845764160156
+Model cw.npy, epoch 0, train accuracy: 0.1135
+
+Model cw.npy, epoch 1, train loss: 459.5378723144531
+Model cw.npy, epoch 1, train accuracy: 0.1135
+
+Model cw.npy, epoch 2, train loss: 458.4641418457031
+Model cw.npy, epoch 2, train accuracy: 0.1135
+
+Model cw.npy, epoch 3, train loss: 456.2086486816406
+Model cw.npy, epoch 3, train accuracy: 0.1417
+
+Model cw.npy, epoch 4, train loss: 448.6232604980469
+Model cw.npy, epoch 4, train accuracy: 0.2952
+
+Model cw.npy, epoch 5, train loss: 393.9356384277344
+Model cw.npy, epoch 5, train accuracy: 0.4172
+
+Model cw.npy, epoch 6, train loss: 231.37266540527344
+Model cw.npy, epoch 6, train accuracy: 0.6368
+
+Model cw.npy, epoch 7, train loss: 141.654296875
+Model cw.npy, epoch 7, train accuracy: 0.7639
+
+Model cw.npy, epoch 8, train loss: 108.98011779785156
+Model cw.npy, epoch 8, train accuracy: 0.8193
+
+Model cw.npy, epoch 9, train loss: 89.54463958740234
+Model cw.npy, epoch 9, train accuracy: 0.8545
+
+Model cw.npy, epoch 10, train loss: 75.78878021240234
+Model cw.npy, epoch 10, train accuracy: 0.8786
+
+Model cw.npy, epoch 11, train loss: 65.88372039794922
+Model cw.npy, epoch 11, train accuracy: 0.8951
+
+Model cw.npy, epoch 12, train loss: 58.25361251831055
+Model cw.npy, epoch 12, train accuracy: 0.9085
+
+Model cw.npy, epoch 13, train loss: 52.007659912109375
+Model cw.npy, epoch 13, train accuracy: 0.9196
+
+Model cw.npy, epoch 14, train loss: 46.84033966064453
+Model cw.npy, epoch 14, train accuracy: 0.9271
+
+Model cw.npy, epoch 15, train loss: 42.412906646728516
+Model cw.npy, epoch 15, train accuracy: 0.9347
+
+Model cw.npy, epoch 16, train loss: 38.808292388916016
+Model cw.npy, epoch 16, train accuracy: 0.939
+
+Model cw.npy, epoch 17, train loss: 35.756446838378906
+Model cw.npy, epoch 17, train accuracy: 0.9444
+
+Model cw.npy, epoch 18, train loss: 33.209861755371094
+Model cw.npy, epoch 18, train accuracy: 0.9482
+
+Model cw.npy, epoch 19, train loss: 31.00029182434082
+Model cw.npy, epoch 19, train accuracy: 0.9516
+
+Model cw.npy, epoch 20, train loss: 29.146825790405273
+Model cw.npy, epoch 20, train accuracy: 0.9539
+
+Model cw.npy, epoch 21, train loss: 27.525014877319336
+Model cw.npy, epoch 21, train accuracy: 0.9563
+
+Model cw.npy, epoch 22, train loss: 26.0344295501709
+Model cw.npy, epoch 22, train accuracy: 0.9585
+
+Model cw.npy, epoch 23, train loss: 24.657033920288086
+Model cw.npy, epoch 23, train accuracy: 0.9595
+
+Model cw.npy, epoch 24, train loss: 23.440731048583984
+Model cw.npy, epoch 24, train accuracy: 0.9614
+
+Model cw.npy, epoch 25, train loss: 22.234968185424805
+Model cw.npy, epoch 25, train accuracy: 0.9642
+
+Model cw.npy, epoch 26, train loss: 21.10017204284668
+Model cw.npy, epoch 26, train accuracy: 0.9656
+
+Model cw.npy, epoch 27, train loss: 20.01567268371582
+Model cw.npy, epoch 27, train accuracy: 0.9676
+
+Model cw.npy, epoch 28, train loss: 19.03978729248047
+Model cw.npy, epoch 28, train accuracy: 0.9703
+
+Model cw.npy, epoch 29, train loss: 18.086400985717773
+Model cw.npy, epoch 29, train accuracy: 0.9714
+
+Model cw.npy, epoch 30, train loss: 17.214229583740234
+Model cw.npy, epoch 30, train accuracy: 0.9733
+
+Model cw.npy, epoch 31, train loss: 16.372180938720703
+Model cw.npy, epoch 31, train accuracy: 0.9743
+
+Model cw.npy, epoch 32, train loss: 15.591573715209961
+Model cw.npy, epoch 32, train accuracy: 0.9752
+
+Model cw.npy, epoch 33, train loss: 14.867225646972656
+Model cw.npy, epoch 33, train accuracy: 0.9768
+
+Model cw.npy, epoch 34, train loss: 14.13043212890625
+Model cw.npy, epoch 34, train accuracy: 0.9781
+
+Model cw.npy, epoch 35, train loss: 13.502666473388672
+Model cw.npy, epoch 35, train accuracy: 0.9791
+
+Model cw.npy, epoch 36, train loss: 12.84924030303955
+Model cw.npy, epoch 36, train accuracy: 0.9801
+
+Model cw.npy, epoch 37, train loss: 12.25926399230957
+Model cw.npy, epoch 37, train accuracy: 0.9814
+
+Model cw.npy, epoch 38, train loss: 11.676268577575684
+Model cw.npy, epoch 38, train accuracy: 0.982
+
+Model cw.npy, epoch 39, train loss: 11.16714859008789
+Model cw.npy, epoch 39, train accuracy: 0.9829
+
+Model cw.npy, epoch 40, train loss: 10.62282943725586
+Model cw.npy, epoch 40, train accuracy: 0.9834
+
+Model cw.npy, epoch 41, train loss: 10.167433738708496
+Model cw.npy, epoch 41, train accuracy: 0.984
+
+Model cw.npy, epoch 42, train loss: 9.70463752746582
+Model cw.npy, epoch 42, train accuracy: 0.9851
+
+Model cw.npy, epoch 43, train loss: 9.270821571350098
+Model cw.npy, epoch 43, train accuracy: 0.9863
+
+Model cw.npy, epoch 44, train loss: 8.855928421020508
+Model cw.npy, epoch 44, train accuracy: 0.9865
+
+Model cw.npy, epoch 45, train loss: 8.467718124389648
+Model cw.npy, epoch 45, train accuracy: 0.9879
+
+Model cw.npy, epoch 46, train loss: 8.059443473815918
+Model cw.npy, epoch 46, train accuracy: 0.9889
+
+Model cw.npy, epoch 47, train loss: 7.7156267166137695
+Model cw.npy, epoch 47, train accuracy: 0.9894
+
+Model cw.npy, epoch 48, train loss: 7.369328022003174
+Model cw.npy, epoch 48, train accuracy: 0.9901
+
+Model cw.npy, epoch 49, train loss: 7.054293155670166
+Model cw.npy, epoch 49, train accuracy: 0.9904
+
+training model on df.npy
+Model df.npy, epoch 0, train loss: 460.34747314453125
+Model df.npy, epoch 0, train accuracy: 0.1009
+
+Model df.npy, epoch 1, train loss: 459.8071594238281
+Model df.npy, epoch 1, train accuracy: 0.1009
+
+Model df.npy, epoch 2, train loss: 459.2852478027344
+Model df.npy, epoch 2, train accuracy: 0.1828
+
+Model df.npy, epoch 3, train loss: 458.5560302734375
+Model df.npy, epoch 3, train accuracy: 0.1194
+
+Model df.npy, epoch 4, train loss: 457.1874694824219
+Model df.npy, epoch 4, train accuracy: 0.1261
+
+Model df.npy, epoch 5, train loss: 454.07647705078125
+Model df.npy, epoch 5, train accuracy: 0.3179
+
+Model df.npy, epoch 6, train loss: 442.7056579589844
+Model df.npy, epoch 6, train accuracy: 0.4861
+
+Model df.npy, epoch 7, train loss: 349.7811279296875
+Model df.npy, epoch 7, train accuracy: 0.5555
+
+Model df.npy, epoch 8, train loss: 158.0127716064453
+Model df.npy, epoch 8, train accuracy: 0.7508
+
+Model df.npy, epoch 9, train loss: 107.59669494628906
+Model df.npy, epoch 9, train accuracy: 0.8227
+
+Model df.npy, epoch 10, train loss: 89.2393798828125
+Model df.npy, epoch 10, train accuracy: 0.8553
+
+Model df.npy, epoch 11, train loss: 78.66399383544922
+Model df.npy, epoch 11, train accuracy: 0.8749
+
+Model df.npy, epoch 12, train loss: 70.33939361572266
+Model df.npy, epoch 12, train accuracy: 0.8869
+
+Model df.npy, epoch 13, train loss: 63.0544548034668
+Model df.npy, epoch 13, train accuracy: 0.9001
+
+Model df.npy, epoch 14, train loss: 56.4815559387207
+Model df.npy, epoch 14, train accuracy: 0.9117
+
+Model df.npy, epoch 15, train loss: 50.61780548095703
+Model df.npy, epoch 15, train accuracy: 0.9203
+
+Model df.npy, epoch 16, train loss: 45.55729675292969
+Model df.npy, epoch 16, train accuracy: 0.9277
+
+Model df.npy, epoch 17, train loss: 41.105018615722656
+Model df.npy, epoch 17, train accuracy: 0.934
+
+Model df.npy, epoch 18, train loss: 37.362308502197266
+Model df.npy, epoch 18, train accuracy: 0.9402
+
+Model df.npy, epoch 19, train loss: 34.21280288696289
+Model df.npy, epoch 19, train accuracy: 0.9444
+
+Model df.npy, epoch 20, train loss: 31.489269256591797
+Model df.npy, epoch 20, train accuracy: 0.9494
+
+Model df.npy, epoch 21, train loss: 29.156288146972656
+Model df.npy, epoch 21, train accuracy: 0.953
+
+Model df.npy, epoch 22, train loss: 27.08213996887207
+Model df.npy, epoch 22, train accuracy: 0.9558
+
+Model df.npy, epoch 23, train loss: 25.29256248474121
+Model df.npy, epoch 23, train accuracy: 0.9597
+
+Model df.npy, epoch 24, train loss: 23.66285514831543
+Model df.npy, epoch 24, train accuracy: 0.9625
+
+Model df.npy, epoch 25, train loss: 22.166303634643555
+Model df.npy, epoch 25, train accuracy: 0.9645
+
+Model df.npy, epoch 26, train loss: 20.79043197631836
+Model df.npy, epoch 26, train accuracy: 0.9662
+
+Model df.npy, epoch 27, train loss: 19.547351837158203
+Model df.npy, epoch 27, train accuracy: 0.9681
+
+Model df.npy, epoch 28, train loss: 18.38119125366211
+Model df.npy, epoch 28, train accuracy: 0.9701
+
+Model df.npy, epoch 29, train loss: 17.296306610107422
+Model df.npy, epoch 29, train accuracy: 0.972
+
+Model df.npy, epoch 30, train loss: 16.28317642211914
+Model df.npy, epoch 30, train accuracy: 0.9735
+
+Model df.npy, epoch 31, train loss: 15.309218406677246
+Model df.npy, epoch 31, train accuracy: 0.9744
+
+Model df.npy, epoch 32, train loss: 14.373177528381348
+Model df.npy, epoch 32, train accuracy: 0.9758
+
+Model df.npy, epoch 33, train loss: 13.574244499206543
+Model df.npy, epoch 33, train accuracy: 0.9775
+
+Model df.npy, epoch 34, train loss: 12.821194648742676
+Model df.npy, epoch 34, train accuracy: 0.9791
+
+Model df.npy, epoch 35, train loss: 12.109224319458008
+Model df.npy, epoch 35, train accuracy: 0.9806
+
+Model df.npy, epoch 36, train loss: 11.410194396972656
+Model df.npy, epoch 36, train accuracy: 0.9821
+
+Model df.npy, epoch 37, train loss: 10.733776092529297
+Model df.npy, epoch 37, train accuracy: 0.9828
+
+Model df.npy, epoch 38, train loss: 10.114042282104492
+Model df.npy, epoch 38, train accuracy: 0.9843
+
+Model df.npy, epoch 39, train loss: 9.535143852233887
+Model df.npy, epoch 39, train accuracy: 0.9851
+
+Model df.npy, epoch 40, train loss: 8.977676391601562
+Model df.npy, epoch 40, train accuracy: 0.9861
+
+Model df.npy, epoch 41, train loss: 8.483793258666992
+Model df.npy, epoch 41, train accuracy: 0.988
+
+Model df.npy, epoch 42, train loss: 7.985934734344482
+Model df.npy, epoch 42, train accuracy: 0.9885
+
+Model df.npy, epoch 43, train loss: 7.560032844543457
+Model df.npy, epoch 43, train accuracy: 0.9894
+
+Model df.npy, epoch 44, train loss: 7.124822616577148
+Model df.npy, epoch 44, train accuracy: 0.9905
+
+Model df.npy, epoch 45, train loss: 6.741093158721924
+Model df.npy, epoch 45, train accuracy: 0.9912
+
+Model df.npy, epoch 46, train loss: 6.394170761108398
+Model df.npy, epoch 46, train accuracy: 0.9919
+
+Model df.npy, epoch 47, train loss: 6.060235500335693
+Model df.npy, epoch 47, train accuracy: 0.9922
+
+Model df.npy, epoch 48, train loss: 5.721522808074951
+Model df.npy, epoch 48, train accuracy: 0.9931
+
+Model df.npy, epoch 49, train loss: 5.428221225738525
+Model df.npy, epoch 49, train accuracy: 0.9935
+
+training model on fgsm.npy
+Model fgsm.npy, epoch 0, train loss: 460.5821838378906
+Model fgsm.npy, epoch 0, train accuracy: 0.1028
+
+Model fgsm.npy, epoch 1, train loss: 459.9962158203125
+Model fgsm.npy, epoch 1, train accuracy: 0.1028
+
+Model fgsm.npy, epoch 2, train loss: 459.296875
+Model fgsm.npy, epoch 2, train accuracy: 0.1142
+
+Model fgsm.npy, epoch 3, train loss: 458.3778991699219
+Model fgsm.npy, epoch 3, train accuracy: 0.1724
+
+Model fgsm.npy, epoch 4, train loss: 456.7278747558594
+Model fgsm.npy, epoch 4, train accuracy: 0.1991
+
+Model fgsm.npy, epoch 5, train loss: 452.8384704589844
+Model fgsm.npy, epoch 5, train accuracy: 0.31
+
+Model fgsm.npy, epoch 6, train loss: 436.32470703125
+Model fgsm.npy, epoch 6, train accuracy: 0.3965
+
+Model fgsm.npy, epoch 7, train loss: 305.33392333984375
+Model fgsm.npy, epoch 7, train accuracy: 0.5655
+
+Model fgsm.npy, epoch 8, train loss: 157.2106475830078
+Model fgsm.npy, epoch 8, train accuracy: 0.7492
+
+Model fgsm.npy, epoch 9, train loss: 114.3243637084961
+Model fgsm.npy, epoch 9, train accuracy: 0.8176
+
+Model fgsm.npy, epoch 10, train loss: 92.46586608886719
+Model fgsm.npy, epoch 10, train accuracy: 0.8581
+
+Model fgsm.npy, epoch 11, train loss: 80.03143310546875
+Model fgsm.npy, epoch 11, train accuracy: 0.8777
+
+Model fgsm.npy, epoch 12, train loss: 70.98760986328125
+Model fgsm.npy, epoch 12, train accuracy: 0.8907
+
+Model fgsm.npy, epoch 13, train loss: 63.7443962097168
+Model fgsm.npy, epoch 13, train accuracy: 0.9011
+
+Model fgsm.npy, epoch 14, train loss: 57.422813415527344
+Model fgsm.npy, epoch 14, train accuracy: 0.9103
+
+Model fgsm.npy, epoch 15, train loss: 52.17917251586914
+Model fgsm.npy, epoch 15, train accuracy: 0.9186
+
+Model fgsm.npy, epoch 16, train loss: 47.670379638671875
+Model fgsm.npy, epoch 16, train accuracy: 0.9238
+
+Model fgsm.npy, epoch 17, train loss: 43.560630798339844
+Model fgsm.npy, epoch 17, train accuracy: 0.9307
+
+Model fgsm.npy, epoch 18, train loss: 40.15550994873047
+Model fgsm.npy, epoch 18, train accuracy: 0.9358
+
+Model fgsm.npy, epoch 19, train loss: 37.27778244018555
+Model fgsm.npy, epoch 19, train accuracy: 0.9418
+
+Model fgsm.npy, epoch 20, train loss: 34.72904968261719
+Model fgsm.npy, epoch 20, train accuracy: 0.9451
+
+Model fgsm.npy, epoch 21, train loss: 32.44465255737305
+Model fgsm.npy, epoch 21, train accuracy: 0.9483
+
+Model fgsm.npy, epoch 22, train loss: 30.382421493530273
+Model fgsm.npy, epoch 22, train accuracy: 0.9513
+
+Model fgsm.npy, epoch 23, train loss: 28.3933162689209
+Model fgsm.npy, epoch 23, train accuracy: 0.9541
+
+Model fgsm.npy, epoch 24, train loss: 26.616600036621094
+Model fgsm.npy, epoch 24, train accuracy: 0.9581
+
+Model fgsm.npy, epoch 25, train loss: 25.018739700317383
+Model fgsm.npy, epoch 25, train accuracy: 0.9607
+
+Model fgsm.npy, epoch 26, train loss: 23.559314727783203
+Model fgsm.npy, epoch 26, train accuracy: 0.9629
+
+Model fgsm.npy, epoch 27, train loss: 22.171728134155273
+Model fgsm.npy, epoch 27, train accuracy: 0.9656
+
+Model fgsm.npy, epoch 28, train loss: 20.96666717529297
+Model fgsm.npy, epoch 28, train accuracy: 0.9672
+
+Model fgsm.npy, epoch 29, train loss: 19.761768341064453
+Model fgsm.npy, epoch 29, train accuracy: 0.9686
+
+Model fgsm.npy, epoch 30, train loss: 18.69552230834961
+Model fgsm.npy, epoch 30, train accuracy: 0.9697
+
+Model fgsm.npy, epoch 31, train loss: 17.680126190185547
+Model fgsm.npy, epoch 31, train accuracy: 0.9717
+
+Model fgsm.npy, epoch 32, train loss: 16.698627471923828
+Model fgsm.npy, epoch 32, train accuracy: 0.974
+
+Model fgsm.npy, epoch 33, train loss: 15.790023803710938
+Model fgsm.npy, epoch 33, train accuracy: 0.9748
+
+Model fgsm.npy, epoch 34, train loss: 14.961459159851074
+Model fgsm.npy, epoch 34, train accuracy: 0.976
+
+Model fgsm.npy, epoch 35, train loss: 14.150670051574707
+Model fgsm.npy, epoch 35, train accuracy: 0.9776
+
+Model fgsm.npy, epoch 36, train loss: 13.42349624633789
+Model fgsm.npy, epoch 36, train accuracy: 0.9783
+
+Model fgsm.npy, epoch 37, train loss: 12.707719802856445
+Model fgsm.npy, epoch 37, train accuracy: 0.9793
+
+Model fgsm.npy, epoch 38, train loss: 12.041440963745117
+Model fgsm.npy, epoch 38, train accuracy: 0.9812
+
+Model fgsm.npy, epoch 39, train loss: 11.40273380279541
+Model fgsm.npy, epoch 39, train accuracy: 0.982
+
+Model fgsm.npy, epoch 40, train loss: 10.778175354003906
+Model fgsm.npy, epoch 40, train accuracy: 0.9829
+
+Model fgsm.npy, epoch 41, train loss: 10.2134370803833
+Model fgsm.npy, epoch 41, train accuracy: 0.984
+
+Model fgsm.npy, epoch 42, train loss: 9.690332412719727
+Model fgsm.npy, epoch 42, train accuracy: 0.985
+
+Model fgsm.npy, epoch 43, train loss: 9.169859886169434
+Model fgsm.npy, epoch 43, train accuracy: 0.9862
+
+Model fgsm.npy, epoch 44, train loss: 8.707671165466309
+Model fgsm.npy, epoch 44, train accuracy: 0.9872
+
+Model fgsm.npy, epoch 45, train loss: 8.277029991149902
+Model fgsm.npy, epoch 45, train accuracy: 0.9878
+
+Model fgsm.npy, epoch 46, train loss: 7.862608432769775
+Model fgsm.npy, epoch 46, train accuracy: 0.9891
+
+Model fgsm.npy, epoch 47, train loss: 7.483368396759033
+Model fgsm.npy, epoch 47, train accuracy: 0.9896
+
+Model fgsm.npy, epoch 48, train loss: 7.12853479385376
+Model fgsm.npy, epoch 48, train accuracy: 0.9899
+
+Model fgsm.npy, epoch 49, train loss: 6.758138179779053
+Model fgsm.npy, epoch 49, train accuracy: 0.9901
+
+training model on hf.npy
+Model hf.npy, epoch 0, train loss: 459.418701171875
+Model hf.npy, epoch 0, train accuracy: 0.1113
+
+Model hf.npy, epoch 1, train loss: 454.4519348144531
+Model hf.npy, epoch 1, train accuracy: 0.2666
+
+Model hf.npy, epoch 2, train loss: 429.0193786621094
+Model hf.npy, epoch 2, train accuracy: 0.5237
+
+Model hf.npy, epoch 3, train loss: 232.08119201660156
+Model hf.npy, epoch 3, train accuracy: 0.6932
+
+Model hf.npy, epoch 4, train loss: 114.30987548828125
+Model hf.npy, epoch 4, train accuracy: 0.8151
+
+Model hf.npy, epoch 5, train loss: 90.77051544189453
+Model hf.npy, epoch 5, train accuracy: 0.8556
+
+Model hf.npy, epoch 6, train loss: 77.2105484008789
+Model hf.npy, epoch 6, train accuracy: 0.8789
+
+Model hf.npy, epoch 7, train loss: 67.07896423339844
+Model hf.npy, epoch 7, train accuracy: 0.8926
+
+Model hf.npy, epoch 8, train loss: 58.937313079833984
+Model hf.npy, epoch 8, train accuracy: 0.9072
+
+Model hf.npy, epoch 9, train loss: 52.369651794433594
+Model hf.npy, epoch 9, train accuracy: 0.9169
+
+Model hf.npy, epoch 10, train loss: 46.76476287841797
+Model hf.npy, epoch 10, train accuracy: 0.9271
+
+Model hf.npy, epoch 11, train loss: 42.03970718383789
+Model hf.npy, epoch 11, train accuracy: 0.9342
+
+Model hf.npy, epoch 12, train loss: 38.18537521362305
+Model hf.npy, epoch 12, train accuracy: 0.9398
+
+Model hf.npy, epoch 13, train loss: 35.01435089111328
+Model hf.npy, epoch 13, train accuracy: 0.9432
+
+Model hf.npy, epoch 14, train loss: 32.48457717895508
+Model hf.npy, epoch 14, train accuracy: 0.9466
+
+Model hf.npy, epoch 15, train loss: 30.304407119750977
+Model hf.npy, epoch 15, train accuracy: 0.9509
+
+Model hf.npy, epoch 16, train loss: 28.28079605102539
+Model hf.npy, epoch 16, train accuracy: 0.9541
+
+Model hf.npy, epoch 17, train loss: 26.281278610229492
+Model hf.npy, epoch 17, train accuracy: 0.957
+
+Model hf.npy, epoch 18, train loss: 24.397903442382812
+Model hf.npy, epoch 18, train accuracy: 0.9605
+
+Model hf.npy, epoch 19, train loss: 22.659072875976562
+Model hf.npy, epoch 19, train accuracy: 0.9636
+
+Model hf.npy, epoch 20, train loss: 21.083179473876953
+Model hf.npy, epoch 20, train accuracy: 0.9662
+
+Model hf.npy, epoch 21, train loss: 19.69912338256836
+Model hf.npy, epoch 21, train accuracy: 0.9678
+
+Model hf.npy, epoch 22, train loss: 18.508975982666016
+Model hf.npy, epoch 22, train accuracy: 0.97
+
+Model hf.npy, epoch 23, train loss: 17.42453384399414
+Model hf.npy, epoch 23, train accuracy: 0.9713
+
+Model hf.npy, epoch 24, train loss: 16.376089096069336
+Model hf.npy, epoch 24, train accuracy: 0.973
+
+Model hf.npy, epoch 25, train loss: 15.502388954162598
+Model hf.npy, epoch 25, train accuracy: 0.975
+
+Model hf.npy, epoch 26, train loss: 14.665133476257324
+Model hf.npy, epoch 26, train accuracy: 0.9761
+
+Model hf.npy, epoch 27, train loss: 13.901518821716309
+Model hf.npy, epoch 27, train accuracy: 0.9777
+
+Model hf.npy, epoch 28, train loss: 13.192692756652832
+Model hf.npy, epoch 28, train accuracy: 0.979
+
+Model hf.npy, epoch 29, train loss: 12.50866985321045
+Model hf.npy, epoch 29, train accuracy: 0.9798
+
+Model hf.npy, epoch 30, train loss: 11.859750747680664
+Model hf.npy, epoch 30, train accuracy: 0.9804
+
+Model hf.npy, epoch 31, train loss: 11.242658615112305
+Model hf.npy, epoch 31, train accuracy: 0.9813
+
+Model hf.npy, epoch 32, train loss: 10.631844520568848
+Model hf.npy, epoch 32, train accuracy: 0.9825
+
+Model hf.npy, epoch 33, train loss: 10.095650672912598
+Model hf.npy, epoch 33, train accuracy: 0.9837
+
+Model hf.npy, epoch 34, train loss: 9.552387237548828
+Model hf.npy, epoch 34, train accuracy: 0.9848
+
+Model hf.npy, epoch 35, train loss: 9.068921089172363
+Model hf.npy, epoch 35, train accuracy: 0.9856
+
+Model hf.npy, epoch 36, train loss: 8.62267017364502
+Model hf.npy, epoch 36, train accuracy: 0.9865
+
+Model hf.npy, epoch 37, train loss: 8.198307991027832
+Model hf.npy, epoch 37, train accuracy: 0.9875
+
+Model hf.npy, epoch 38, train loss: 7.785618782043457
+Model hf.npy, epoch 38, train accuracy: 0.9883
+
+Model hf.npy, epoch 39, train loss: 7.4245924949646
+Model hf.npy, epoch 39, train accuracy: 0.9891
+
+Model hf.npy, epoch 40, train loss: 7.067281246185303
+Model hf.npy, epoch 40, train accuracy: 0.9898
+
+Model hf.npy, epoch 41, train loss: 6.737401485443115
+Model hf.npy, epoch 41, train accuracy: 0.9904
+
+Model hf.npy, epoch 42, train loss: 6.456409931182861
+Model hf.npy, epoch 42, train accuracy: 0.9913
+
+Model hf.npy, epoch 43, train loss: 6.186492919921875
+Model hf.npy, epoch 43, train accuracy: 0.9916
+
+Model hf.npy, epoch 44, train loss: 5.9321208000183105
+Model hf.npy, epoch 44, train accuracy: 0.9919
+
+Model hf.npy, epoch 45, train loss: 5.706093788146973
+Model hf.npy, epoch 45, train accuracy: 0.992
+
+Model hf.npy, epoch 46, train loss: 5.482158184051514
+Model hf.npy, epoch 46, train accuracy: 0.9928
+
+Model hf.npy, epoch 47, train loss: 5.258699893951416
+Model hf.npy, epoch 47, train accuracy: 0.9928
+
+Model hf.npy, epoch 48, train loss: 5.034291744232178
+Model hf.npy, epoch 48, train accuracy: 0.9931
+
+Model hf.npy, epoch 49, train loss: 4.865118026733398
+Model hf.npy, epoch 49, train accuracy: 0.9935
+
+training model on salt.npy
+Model salt.npy, epoch 0, train loss: 460.183837890625
+Model salt.npy, epoch 0, train accuracy: 0.0989
+
+Model salt.npy, epoch 1, train loss: 459.214111328125
+Model salt.npy, epoch 1, train accuracy: 0.1871
+
+Model salt.npy, epoch 2, train loss: 457.65899658203125
+Model salt.npy, epoch 2, train accuracy: 0.1926
+
+Model salt.npy, epoch 3, train loss: 453.6327819824219
+Model salt.npy, epoch 3, train accuracy: 0.2345
+
+Model salt.npy, epoch 4, train loss: 431.20001220703125
+Model salt.npy, epoch 4, train accuracy: 0.2939
+
+Model salt.npy, epoch 5, train loss: 303.37408447265625
+Model salt.npy, epoch 5, train accuracy: 0.5418
+
+Model salt.npy, epoch 6, train loss: 170.45863342285156
+Model salt.npy, epoch 6, train accuracy: 0.729
+
+Model salt.npy, epoch 7, train loss: 124.13306427001953
+Model salt.npy, epoch 7, train accuracy: 0.8028
+
+Model salt.npy, epoch 8, train loss: 100.9690933227539
+Model salt.npy, epoch 8, train accuracy: 0.8469
+
+Model salt.npy, epoch 9, train loss: 85.7724609375
+Model salt.npy, epoch 9, train accuracy: 0.8693
+
+Model salt.npy, epoch 10, train loss: 75.82765197753906
+Model salt.npy, epoch 10, train accuracy: 0.8842
+
+Model salt.npy, epoch 11, train loss: 68.63365173339844
+Model salt.npy, epoch 11, train accuracy: 0.8964
+
+Model salt.npy, epoch 12, train loss: 62.43130874633789
+Model salt.npy, epoch 12, train accuracy: 0.9048
+
+Model salt.npy, epoch 13, train loss: 56.976009368896484
+Model salt.npy, epoch 13, train accuracy: 0.9112
+
+Model salt.npy, epoch 14, train loss: 52.122440338134766
+Model salt.npy, epoch 14, train accuracy: 0.9188
+
+Model salt.npy, epoch 15, train loss: 47.78776931762695
+Model salt.npy, epoch 15, train accuracy: 0.9243
+
+Model salt.npy, epoch 16, train loss: 43.92656326293945
+Model salt.npy, epoch 16, train accuracy: 0.9307
+
+Model salt.npy, epoch 17, train loss: 40.56843948364258
+Model salt.npy, epoch 17, train accuracy: 0.9361
+
+Model salt.npy, epoch 18, train loss: 37.4582405090332
+Model salt.npy, epoch 18, train accuracy: 0.9408
+
+Model salt.npy, epoch 19, train loss: 34.800498962402344
+Model salt.npy, epoch 19, train accuracy: 0.9447
+
+Model salt.npy, epoch 20, train loss: 32.54944610595703
+Model salt.npy, epoch 20, train accuracy: 0.947
+
+Model salt.npy, epoch 21, train loss: 30.457942962646484
+Model salt.npy, epoch 21, train accuracy: 0.9503
+
+Model salt.npy, epoch 22, train loss: 28.5311279296875
+Model salt.npy, epoch 22, train accuracy: 0.9525
+
+Model salt.npy, epoch 23, train loss: 26.662559509277344
+Model salt.npy, epoch 23, train accuracy: 0.9564
+
+Model salt.npy, epoch 24, train loss: 24.990816116333008
+Model salt.npy, epoch 24, train accuracy: 0.9605
+
+Model salt.npy, epoch 25, train loss: 23.41997718811035
+Model salt.npy, epoch 25, train accuracy: 0.9627
+
+Model salt.npy, epoch 26, train loss: 21.943347930908203
+Model salt.npy, epoch 26, train accuracy: 0.9658
+
+Model salt.npy, epoch 27, train loss: 20.593835830688477
+Model salt.npy, epoch 27, train accuracy: 0.968
+
+Model salt.npy, epoch 28, train loss: 19.376014709472656
+Model salt.npy, epoch 28, train accuracy: 0.9701
+
+Model salt.npy, epoch 29, train loss: 18.20958709716797
+Model salt.npy, epoch 29, train accuracy: 0.9722
+
+Model salt.npy, epoch 30, train loss: 17.089109420776367
+Model salt.npy, epoch 30, train accuracy: 0.9746
+
+Model salt.npy, epoch 31, train loss: 16.11025619506836
+Model salt.npy, epoch 31, train accuracy: 0.9749
+
+Model salt.npy, epoch 32, train loss: 15.132025718688965
+Model salt.npy, epoch 32, train accuracy: 0.9767
+
+Model salt.npy, epoch 33, train loss: 14.264718055725098
+Model salt.npy, epoch 33, train accuracy: 0.9784
+
+Model salt.npy, epoch 34, train loss: 13.434623718261719
+Model salt.npy, epoch 34, train accuracy: 0.98
+
+Model salt.npy, epoch 35, train loss: 12.658344268798828
+Model salt.npy, epoch 35, train accuracy: 0.9814
+
+Model salt.npy, epoch 36, train loss: 11.885868072509766
+Model salt.npy, epoch 36, train accuracy: 0.9827
+
+Model salt.npy, epoch 37, train loss: 11.229767799377441
+Model salt.npy, epoch 37, train accuracy: 0.9838
+
+Model salt.npy, epoch 38, train loss: 10.612066268920898
+Model salt.npy, epoch 38, train accuracy: 0.9845
+
+Model salt.npy, epoch 39, train loss: 10.007031440734863
+Model salt.npy, epoch 39, train accuracy: 0.9854
+
+Model salt.npy, epoch 40, train loss: 9.431431770324707
+Model salt.npy, epoch 40, train accuracy: 0.9861
+
+Model salt.npy, epoch 41, train loss: 8.910364151000977
+Model salt.npy, epoch 41, train accuracy: 0.9874
+
+Model salt.npy, epoch 42, train loss: 8.41015625
+Model salt.npy, epoch 42, train accuracy: 0.9881
+
+Model salt.npy, epoch 43, train loss: 7.949742317199707
+Model salt.npy, epoch 43, train accuracy: 0.9889
+
+Model salt.npy, epoch 44, train loss: 7.502407550811768
+Model salt.npy, epoch 44, train accuracy: 0.9902
+
+Model salt.npy, epoch 45, train loss: 7.095634937286377
+Model salt.npy, epoch 45, train accuracy: 0.9907
+
+Model salt.npy, epoch 46, train loss: 6.701231002807617
+Model salt.npy, epoch 46, train accuracy: 0.9918
+
+Model salt.npy, epoch 47, train loss: 6.328883171081543
+Model salt.npy, epoch 47, train accuracy: 0.992
+
+Model salt.npy, epoch 48, train loss: 5.983616828918457
+Model salt.npy, epoch 48, train accuracy: 0.9926
+
+Model salt.npy, epoch 49, train loss: 5.647212505340576
+Model salt.npy, epoch 49, train accuracy: 0.993
+
+training model on single.npy
+Model single.npy, epoch 0, train loss: 460.35699462890625
+Model single.npy, epoch 0, train accuracy: 0.1042
+
+Model single.npy, epoch 1, train loss: 459.9304504394531
+Model single.npy, epoch 1, train accuracy: 0.1338
+
+Model single.npy, epoch 2, train loss: 459.4713439941406
+Model single.npy, epoch 2, train accuracy: 0.1185
+
+Model single.npy, epoch 3, train loss: 458.854248046875
+Model single.npy, epoch 3, train accuracy: 0.1366
+
+Model single.npy, epoch 4, train loss: 457.77935791015625
+Model single.npy, epoch 4, train accuracy: 0.169
+
+Model single.npy, epoch 5, train loss: 455.40625
+Model single.npy, epoch 5, train accuracy: 0.2113
+
+Model single.npy, epoch 6, train loss: 447.7342224121094
+Model single.npy, epoch 6, train accuracy: 0.3293
+
+Model single.npy, epoch 7, train loss: 384.3557434082031
+Model single.npy, epoch 7, train accuracy: 0.5028
+
+Model single.npy, epoch 8, train loss: 175.01698303222656
+Model single.npy, epoch 8, train accuracy: 0.7518
+
+Model single.npy, epoch 9, train loss: 101.71338653564453
+Model single.npy, epoch 9, train accuracy: 0.8492
+
+Model single.npy, epoch 10, train loss: 79.37890625
+Model single.npy, epoch 10, train accuracy: 0.8824
+
+Model single.npy, epoch 11, train loss: 68.3369140625
+Model single.npy, epoch 11, train accuracy: 0.898
+
+Model single.npy, epoch 12, train loss: 60.37022399902344
+Model single.npy, epoch 12, train accuracy: 0.908
+
+Model single.npy, epoch 13, train loss: 53.53825759887695
+Model single.npy, epoch 13, train accuracy: 0.9199
+
+Model single.npy, epoch 14, train loss: 47.99476623535156
+Model single.npy, epoch 14, train accuracy: 0.926
+
+Model single.npy, epoch 15, train loss: 43.473899841308594
+Model single.npy, epoch 15, train accuracy: 0.9331
+
+Model single.npy, epoch 16, train loss: 39.78235626220703
+Model single.npy, epoch 16, train accuracy: 0.938
+
+Model single.npy, epoch 17, train loss: 36.729209899902344
+Model single.npy, epoch 17, train accuracy: 0.9425
+
+Model single.npy, epoch 18, train loss: 33.9844970703125
+Model single.npy, epoch 18, train accuracy: 0.9483
+
+Model single.npy, epoch 19, train loss: 31.525339126586914
+Model single.npy, epoch 19, train accuracy: 0.952
+
+Model single.npy, epoch 20, train loss: 29.40251922607422
+Model single.npy, epoch 20, train accuracy: 0.9545
+
+Model single.npy, epoch 21, train loss: 27.29897689819336
+Model single.npy, epoch 21, train accuracy: 0.9576
+
+Model single.npy, epoch 22, train loss: 25.380123138427734
+Model single.npy, epoch 22, train accuracy: 0.9603
+
+Model single.npy, epoch 23, train loss: 23.573558807373047
+Model single.npy, epoch 23, train accuracy: 0.9629
+
+Model single.npy, epoch 24, train loss: 21.99295997619629
+Model single.npy, epoch 24, train accuracy: 0.9659
+
+Model single.npy, epoch 25, train loss: 20.61954689025879
+Model single.npy, epoch 25, train accuracy: 0.9673
+
+Model single.npy, epoch 26, train loss: 19.367555618286133
+Model single.npy, epoch 26, train accuracy: 0.9684
+
+Model single.npy, epoch 27, train loss: 18.193851470947266
+Model single.npy, epoch 27, train accuracy: 0.9702
+
+Model single.npy, epoch 28, train loss: 17.104488372802734
+Model single.npy, epoch 28, train accuracy: 0.972
+
+Model single.npy, epoch 29, train loss: 16.11088752746582
+Model single.npy, epoch 29, train accuracy: 0.9731
+
+Model single.npy, epoch 30, train loss: 15.212804794311523
+Model single.npy, epoch 30, train accuracy: 0.9751
+
+Model single.npy, epoch 31, train loss: 14.366225242614746
+Model single.npy, epoch 31, train accuracy: 0.9758
+
+Model single.npy, epoch 32, train loss: 13.5493745803833
+Model single.npy, epoch 32, train accuracy: 0.9773
+
+Model single.npy, epoch 33, train loss: 12.848416328430176
+Model single.npy, epoch 33, train accuracy: 0.9788
+
+Model single.npy, epoch 34, train loss: 12.162520408630371
+Model single.npy, epoch 34, train accuracy: 0.9797
+
+Model single.npy, epoch 35, train loss: 11.472623825073242
+Model single.npy, epoch 35, train accuracy: 0.9811
+
+Model single.npy, epoch 36, train loss: 10.861600875854492
+Model single.npy, epoch 36, train accuracy: 0.9821
+
+Model single.npy, epoch 37, train loss: 10.285993576049805
+Model single.npy, epoch 37, train accuracy: 0.983
+
+Model single.npy, epoch 38, train loss: 9.721162796020508
+Model single.npy, epoch 38, train accuracy: 0.9843
+
+Model single.npy, epoch 39, train loss: 9.205568313598633
+Model single.npy, epoch 39, train accuracy: 0.9848
+
+Model single.npy, epoch 40, train loss: 8.708745002746582
+Model single.npy, epoch 40, train accuracy: 0.9856
+
+Model single.npy, epoch 41, train loss: 8.259515762329102
+Model single.npy, epoch 41, train accuracy: 0.9864
+
+Model single.npy, epoch 42, train loss: 7.811298370361328
+Model single.npy, epoch 42, train accuracy: 0.9871
+
+Model single.npy, epoch 43, train loss: 7.404545783996582
+Model single.npy, epoch 43, train accuracy: 0.9878
+
+Model single.npy, epoch 44, train loss: 7.030327796936035
+Model single.npy, epoch 44, train accuracy: 0.9892
+
+Model single.npy, epoch 45, train loss: 6.678964138031006
+Model single.npy, epoch 45, train accuracy: 0.9899
+
+Model single.npy, epoch 46, train loss: 6.368945598602295
+Model single.npy, epoch 46, train accuracy: 0.9906
+
+Model single.npy, epoch 47, train loss: 6.048305511474609
+Model single.npy, epoch 47, train accuracy: 0.991
+
+Model single.npy, epoch 48, train loss: 5.754263401031494
+Model single.npy, epoch 48, train accuracy: 0.9916
+
+Model single.npy, epoch 49, train loss: 5.488973617553711
+Model single.npy, epoch 49, train accuracy: 0.9923
+
