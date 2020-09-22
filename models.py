@@ -1,4 +1,6 @@
 import torch.nn as nn
+import os
+import torch
 
 
 class LeNet(nn.Module):
@@ -48,3 +50,25 @@ class LeNet(nn.Module):
         x = self.fc3(x)
         return x
 
+
+def save_model(state_dict: dict, args):
+    dir_name = args.save_dir
+    model_name = args.model_name
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
+
+    save_dir = os.path.join(dir_name, model_name)
+    if not os.path.exists(save_dir):
+        os.mkdir(save_dir)
+
+    save_path = os.path.join(save_dir, model_name + '.pt')
+    torch.save(state_dict, save_path)
+
+
+def load_model(args):
+    model_name = args.model_name
+    dir_name = args.save_dir
+    save_path = os.path.join(dir_name, model_name, model_name + '.pt')
+    if not os.path.exists(save_path):
+        return None
+    return torch.load(save_path)

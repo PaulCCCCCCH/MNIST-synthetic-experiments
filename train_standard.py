@@ -1,65 +1,50 @@
 import pickle
 import numpy as np
-from models import LeNet
+from models import LeNet, save_model
 import torch.optim as optim
 import torch.nn as nn
 from args import *
+from data_utils import get_standard_mnist_dataset
+from models import load_model
 
 
-with open(path_mnist_standard, 'rb') as f:
-    # size of mnist_standard is:
-    #  3 (train, dev, test)
-    # * 2 (img, label)
-    # * size (10000 for dev and test, 50000 for train)
-    # * dim (784 for data, 1 for label)
-    mnist_standard = pickle.load(f, encoding='bytes')
+train, dev, test = get_standard_mnist_dataset(os.path.join(args.data_dir, 'mnist.pkl'), args.batch_size)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-train_s = mnist_standard[0]
-dev_s = mnist_standard[1]
-test_s = mnist_standard[2]
-
-train_size = len(train_s[0])
-test_size = len(dev_s[0])
-
-
-# mnist_perturbed: [(10000, 784)]
-mnist_perturbed = []
-for s in paths_mnist_perturbed:
-    mnist_perturbed.append(np.load(s))
-
-# Start training
+# Initializing model
 lenet = LeNet()
 lenet.to(device)
+
+state_dict = load_model(args)
+lenet.load_state_dict(state_dict)
 
 min_loss = float('inf')
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(lenet.parameters(), lr=learning_rate, momentum=0.9)
+optimizer = optim.SGD(lenet.parameters(), lr=args.learning_rate, momentum=args.momentum)
 
-for epoch in range(num_epoch):
+for epoch in range(args.epoch):
     epoch_loss = 0
     total = 0
     correct = 0
     # Train
-    for i in range(0, train_size, batch_size):
+    for inputs_batch, labels_batch in train:
         # Format input data
-        data = torch.tensor(train_s[0][i:i+batch_size], device=device)
-        data = data.view((batch_size, 1, 28, 28))
-        label = torch.tensor(train_s[1][i:i+batch_size], device=device)
-        label = label.squeeze()
+        inputs = inputs_batch.to(device)
+        labels = labels_batch.to(device)
 
         # Training step
         optimizer.zero_grad()
-        outputs = lenet(data)
-        loss = criterion(outputs, label)
+        outputs = lenet(inputs)
+        loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
 
         # Calculate statistics
         epoch_loss += loss.data
         _, predicted = torch.max(outputs.data, 1)
-        total += label.size(0)
-        correct += (predicted == label).sum().item()
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
 
     print("Epoch {}, train loss: {}".format(epoch, epoch_loss))
     print("Epoch {}, train accuracy: {}".format(epoch, correct / total))
@@ -69,25 +54,21 @@ for epoch in range(num_epoch):
         dev_loss = 0
         total = 0
         correct = 0
-        for i in range(0, test_size, batch_size):
-            data = torch.tensor(dev_s[0][i:i+batch_size], device=device)
-            data = data.view((batch_size, 1, 28, 28))
-            label = torch.tensor(dev_s[1][i:i+batch_size], device=device)
-            label = label.squeeze()
-            outputs = lenet(data)
-            loss = criterion(outputs, label)
-
+        for inputs_batch, labels_batch in dev:
+            inputs = inputs_batch.to(device)
+            labels = labels_batch.to(device)
+            outputs = lenet(inputs)
+            loss = criterion(outputs, labels)
             dev_loss += loss.data
-
             _, predicted = torch.max(outputs.data, 1)
-            total += label.size(0)
-            correct += (predicted == label).sum().item()
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
 
         # Save the model if it is the best so far
         if dev_loss < min_loss:
             min_loss = dev_loss
             print("Best model at epoch {}, model saved.".format(epoch))
-            torch.save(lenet.state_dict(), save_path)
+            save_model(lenet.state_dict(), args)
 
         print("Epoch {}, dev loss: {}".format(epoch, dev_loss))
         print("Epoch {}, dev accuracy : {}".format(epoch, correct / total))
