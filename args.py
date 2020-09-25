@@ -9,13 +9,19 @@ parser.add_argument('model_name', type=str, help='Give model name, this will nam
 parser.add_argument('--save_dir', type=str, help='Root directory where all models are saved', default='models')
 parser.add_argument('--data_dir', type=str, help='Directory of data file', default='data')
 parser.add_argument('--epoch', type=int, help='Max number of epochs to train', default=50)
-parser.add_argument('--batch_size', type=int, help='Batch size to use for training', default=64)
+parser.add_argument('--batch_size', type=int, help='Batch size to use for training', default=50)
 parser.add_argument('--learning_rate', type=float, help='Learning rate to use', default=0.001)
 parser.add_argument('--momentum', type=float, help='Momentum of SGD algorithm', default=0.8)
 
 # For adversarial examples generation only
 parser.add_argument('--adversarial_dir', type=str, help='Place to store adversarial examples', default='adversarial')
-parser.add_argument('--attack_name', type=str, help='The attack to be performed', default='fgsm')
+parser.add_argument('--attack_name', type=str, help='The attack to be performed', default='fgsm',
+                    choices=['fgsm', 'cw'])
+parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
+
+# For adversarial testing
+parser.add_argument('--adv_data_path', type=str, help='The file with adversarial test data', default='')
+parser.add_argument('--adv_model_name', type=str, help='The name of the model trained on adversarial data', default='')
 
 
 args = parser.parse_args()

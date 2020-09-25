@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader, Dataset
 import torch
 
 
-class StandardMNIST(Dataset):
+class MNIST(Dataset):
     def __init__(self, inputs, labels):
         self.inputs = inputs
         self.labels = labels
@@ -38,9 +38,20 @@ def load_standard_mnist(path):
     return train, dev, test
 
 
+def load_adv_mnist(path):
+    with open(path, 'rb') as f:
+        data = pickle.load(f)
+    return data
+
+
+def get_adv_mnist_dataset(path, batch_size):
+    test_set = load_adv_mnist(path)
+    return DataLoader(MNIST(test_set[0], test_set[1]), batch_size=batch_size)
+
+
 def get_standard_mnist_dataset(path, batch_size):
     sets = load_standard_mnist(path)
-    return [DataLoader(StandardMNIST(s[0], s[1]), batch_size=batch_size) for s in sets]
+    return [DataLoader(MNIST(s[0], s[1]), batch_size=batch_size) for s in sets]
 
 
 if __name__ == '__main__':

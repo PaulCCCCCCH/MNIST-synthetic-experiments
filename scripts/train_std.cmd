@@ -1,0 +1,1 @@
+python train.py standard --epoch 50

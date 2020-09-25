@@ -51,9 +51,12 @@ class LeNet(nn.Module):
         return x
 
 
-def save_model(state_dict: dict, args):
+def save_model(state_dict: dict, args, adv=False):
     dir_name = args.save_dir
-    model_name = args.model_name
+    if adv:
+        model_name = args.adv_model_name
+    else:
+        model_name = args.model_name
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
 

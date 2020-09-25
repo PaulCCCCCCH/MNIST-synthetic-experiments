@@ -1,1 +1,0 @@
-python eval_standard.py standard

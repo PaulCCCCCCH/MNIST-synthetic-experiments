@@ -1,1 +1,1 @@
-python generate_adversarial.py standard
+python -i generate_adversarial.py standard --attack_name cw

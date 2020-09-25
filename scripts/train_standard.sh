@@ -1,1 +1,0 @@
-python train_standard.py standard
