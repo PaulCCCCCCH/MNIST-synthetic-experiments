@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pickle
 import os
 
-show_standard = True
+show_standard = False
 
 
 if show_standard:
@@ -15,7 +15,7 @@ if show_standard:
         plt.show()
 
 else:
-    with open(os.path.join('adversarial', 'cw', 'cw.pkl'), 'rb') as f:
+    with open(os.path.join('adversarial', 'cw_c_5.0', 'cw.pkl'), 'rb') as f:
         s = pickle.load(f)
 
     for i in range(10, 20):
