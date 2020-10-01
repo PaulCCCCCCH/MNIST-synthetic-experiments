@@ -1,1 +1,1 @@
-python train.py standard --epoch 50
+python train.py standard --data_path data\\mnist.pkl --epoch 50

@@ -1,20 +1,22 @@
 import torch
 import torch.nn as nn
 from attacks import fgsm_attack, cw_l2_attack
-from data_utils import get_standard_mnist_dataset
+from data_utils import get_mnist_dataset
 from args import *
 from models import LeNet, load_model
 import pickle
-import matplotlib as plt
+from utils import set_logger
+import logging
 
-
-def attack_fgsm(model, testloader, device, epsilon):
+def attack_fgsm(model, loader, device, epsilon):
+    if loader is None:
+        return None, None, None
     count = 0
     correct = 0
     adv_inputs = []
     adv_labels = []
-    batch_size = testloader.batch_size
-    for inputs_batch, labels_batch in testloader:
+    batch_size = loader.batch_size
+    for inputs_batch, labels_batch in loader:
 
         inputs = inputs_batch.to(device)
         labels = labels_batch.to(device)
@@ -44,22 +46,24 @@ def attack_fgsm(model, testloader, device, epsilon):
         adv_labels.append(labels_batch.squeeze().numpy())
 
         count += 1
-        if count % (len(testloader) // 10) == 0:
-            print("Finished {} / {}".format(count * batch_size, len(testloader)*batch_size))
+        if count % (len(loader) // 10) == 0:
+            ("Finished {} / {}".format(count * batch_size, len(loader)*batch_size))
 
-    final_acc = correct / (len(testloader) * batch_size)
-    print("Epsilon: {}\tTest Accuracy = {} / {} = {}\t".format(epsilon, correct, len(testloader)*batch_size, final_acc))
+    final_acc = correct / (len(loader) * batch_size)
+    logging.info("Epsilon: {}\tTest Accuracy = {} / {} = {}\t".format(epsilon, correct, len(loader)*batch_size, final_acc))
 
     return final_acc, adv_inputs, adv_labels
 
 
-def attack_cw(model, testloader, device, c_value):
+def attack_cw(model, loader, device, c_value):
+    if loader is None:
+        return None, None, None
     count = 0
     correct = 0
     adv_inputs = []
     adv_labels = []
-    batch_size = testloader.batch_size
-    for inputs_batch, labels_batch in testloader:
+    batch_size = loader.batch_size
+    for inputs_batch, labels_batch in loader:
 
         inputs = inputs_batch.to(device)
         labels = labels_batch.to(device)
@@ -81,45 +85,56 @@ def attack_cw(model, testloader, device, c_value):
             inputs_to_put = perturbed_data.view(-1, 28*28).detach().cpu().numpy()
 
         count += 1
-        if count % (len(testloader) // 10) == 0:
-            print("Finished {} / {}".format(count * batch_size, len(testloader) * batch_size))
+        if count % (len(loader) // 10) == 0:
+            logging.info("Finished {} / {}".format(count * batch_size, len(loader) * batch_size))
 
         adv_inputs.extend(inputs_to_put)
         adv_labels.extend(labels_batch.numpy())
 
-    final_acc = correct / (len(testloader) * batch_size)
-    print("Test Accuracy = {} / {} = {}\t".format(correct, len(testloader)*batch_size, final_acc))
+    final_acc = correct / (len(loader) * batch_size)
+    logging.info("Test Accuracy = {} / {} = {}\t".format(correct, len(loader)*batch_size, final_acc))
 
     return final_acc, adv_inputs, adv_labels
 
 
 if __name__ == '__main__':
 
+    set_logger(ARGS)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    logging.info("Using device: " + str(device))
+
     lenet = LeNet()
     lenet.to(device)
     state_dict = load_model(ARGS)
     lenet.load_state_dict(state_dict)
     criterion = nn.CrossEntropyLoss()
 
-
-
     if ARGS.attack_name == 'fgsm':
         adversarial_dir = ARGS.adversarial_dir
-        _, _, test = get_standard_mnist_dataset(ARGS)
-        for epsilon in [0, 0.1, 0.2, 0.3, 0.4, 0.5]:
-            print("Generating test set for epsilon {}".format(epsilon))
-            acc, adv_inputs, adv_labels = attack_fgsm(lenet, test, device, epsilon)
+        train, dev, test = get_mnist_dataset(ARGS)
+        datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
+        # for epsilon in [0, 0.1, 0.2, 0.3, 0.4, 0.5]:
+        for epsilon in [0.1]:
+            logging.info("Generating fgsm data set for epsilon {}".format(epsilon))
+            to_dump = []
+            for dataset in datasets:
+                acc, adv_inputs, adv_labels = attack_fgsm(lenet, dataset, device, epsilon)
+                to_dump.append((adv_inputs, adv_labels))
             with open(os.path.join(adversarial_dir, "{}_epsilon_{}.pkl".format(ARGS.attack_name, epsilon)), 'wb') as f:
-                pickle.dump([adv_inputs, adv_labels], f)
+                pickle.dump(to_dump, f)
 
     elif ARGS.attack_name == 'cw':
         adversarial_dir = ARGS.adversarial_dir
-        _, _, test = get_standard_mnist_dataset(ARGS)
-        for c_value in [0.1, 0.5, 1.0, 5.0]:
-            print("Generating samples for c = {}".format(c_value))
-            acc, adv_inputs, adv_labels = attack_cw(lenet, test, device, c_value)
+        train, dev, test = get_mnist_dataset(ARGS)
+        datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
+        # for c_value in [0.1, 0.5, 1.0, 5.0]:
+        for c_value in [0.1]:
+            logging.info("Generating cw data set for c = {}".format(c_value))
+            to_dump = []
+            for dataset in datasets:
+                acc, adv_inputs, adv_labels = attack_cw(lenet, dataset, device, c_value)
+                to_dump.append((adv_inputs, adv_labels))
             with open(os.path.join(adversarial_dir, "{}_c_{}.pkl".format(ARGS.attack_name, c_value)), 'wb') as f:
-                pickle.dump([adv_inputs, adv_labels], f)
+                pickle.dump(to_dump, f)
 
 

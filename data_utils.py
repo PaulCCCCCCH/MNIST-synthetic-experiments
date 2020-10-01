@@ -18,7 +18,7 @@ class MNIST(Dataset):
         return len(self.inputs)
 
 
-def load_standard_mnist(path):
+def _load_mnist(path):
 
     with open(path, 'rb') as f:
         """
@@ -38,25 +38,25 @@ def load_standard_mnist(path):
     return train, dev, test
 
 
-def load_adv_mnist(path):
+def _load_mnist_test_only(path):
     with open(path, 'rb') as f:
         data = pickle.load(f)
     return data
 
 
-def get_adv_mnist_dataset(args):
-    s = load_adv_mnist(args.adv_data_path)
+def get_mnist_dataset_test_only(args):
+    s = _load_mnist_test_only(args.test_only_data_path)
     return DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size)
 
 
-def get_standard_mnist_dataset(args):
-    train, dev, test = load_standard_mnist(os.path.join(args.data_dir, 'mnist.pkl'))
+def get_mnist_dataset(args):
+    train, dev, test = _load_mnist(args.data_path)
     if args.first_n_samples is not None:
         train = train[:args.first_n_samples]
     return [DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size) for s in [train, dev, test]]
 
 
 if __name__ == '__main__':
-    train_set, dev_set, test_set = get_standard_mnist_dataset(os.path.join('data', 'mnist.pkl'), 10)
-    a, b, c = load_standard_mnist(os.path.join('data', 'mnist.pkl'))
+    train_set, dev_set, test_set = get_mnist_dataset(os.path.join('data', 'mnist.pkl'), 10)
+    a, b, c = _load_mnist(os.path.join('data', 'mnist.pkl'))
 

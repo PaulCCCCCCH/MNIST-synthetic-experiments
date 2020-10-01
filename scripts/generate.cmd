@@ -1,1 +1,1 @@
-python -i generate_adversarial.py standard --attack_name cw
+python -i generate_adversarial.py standard --data_path data\\mnist.pkl --attack_name cw

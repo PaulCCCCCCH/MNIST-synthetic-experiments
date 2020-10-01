@@ -1,1 +1,1 @@
-python eval.py standard
+python eval.py standard --data_path data\\mnist.pkl

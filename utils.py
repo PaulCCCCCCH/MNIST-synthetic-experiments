@@ -1,9 +1,15 @@
 import logging
 import os
 
+
 def set_logger(args):
-    model_name = args.model_name if not args.new_model_name else args.new_model_name
-    save_dir = os.path.join(args.save_dir, model_name)
+    if args.isGeneration:
+        save_dir = args.adversarial_dir
+    elif args.saveAsNew:
+        save_dir = args.new_save_dir
+    else:
+        save_dir = args.save_dir
+
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
     logging.basicConfig(level=logging.INFO,

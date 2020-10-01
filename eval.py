@@ -1,13 +1,19 @@
 from models import LeNet, load_model
 import torch
 from args import *
-from data_utils import get_standard_mnist_dataset, get_adv_mnist_dataset
+from data_utils import get_mnist_dataset, get_mnist_dataset_test_only
+import logging
+from utils import set_logger
 
-if ARGS.adv_data_path:
-    test = get_adv_mnist_dataset(ARGS)
+set_logger(ARGS)
+
+if ARGS.test_only_data_path:
+    test = get_mnist_dataset_test_only(ARGS)
 else:
-    _, _, test = get_standard_mnist_dataset(ARGS)
+    _, _, test = get_mnist_dataset(ARGS)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+logging.info("Using device: " + str(device))
+
 
 lenet = LeNet()
 lenet.to(device)
@@ -31,4 +37,4 @@ with torch.no_grad():
         correct += (predicted == labels).sum().item()
 
 print('Correct predictions: {} of {}'.format(correct, total))
-print('Accuracy of the network on 10000 standard test images: {}'.format(correct / total))
+print('Accuracy of the network on 10000 test images: {}'.format(correct / total))

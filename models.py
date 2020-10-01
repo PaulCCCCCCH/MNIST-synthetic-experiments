@@ -99,8 +99,11 @@ class LeNetWithReg(nn.Module):
         return x
 
 
-def save_model(state_dict: dict, args):
-    torch.save(state_dict, args.save_path)
+def save_model(state_dict: dict, args, new=False):
+    if new:
+        torch.save(state_dict, args.new_save_path)
+    else:
+        torch.save(state_dict, args.save_path)
 
 
 def load_model(args):
