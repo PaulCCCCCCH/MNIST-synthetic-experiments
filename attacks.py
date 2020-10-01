@@ -71,7 +71,7 @@ def cw_l2_attack(model, images, labels, device, targeted=False, c=0.5, kappa=0, 
                 return a
             prev = cost
 
-        print('- Learning Progress : %2.2f %%        ' % ((step + 1) / max_iter * 100), end='\r')
+        # print('- Learning Progress : %2.2f %%        ' % ((step + 1) / max_iter * 100), end='\r')
 
     attack_images = 1 / 2 * (nn.Tanh()(w) + 1)
 

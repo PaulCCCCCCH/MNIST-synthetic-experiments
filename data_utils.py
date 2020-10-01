@@ -44,14 +44,16 @@ def load_adv_mnist(path):
     return data
 
 
-def get_adv_mnist_dataset(path, batch_size):
-    test_set = load_adv_mnist(path)
-    return DataLoader(MNIST(test_set[0], test_set[1]), batch_size=batch_size)
+def get_adv_mnist_dataset(args):
+    s = load_adv_mnist(args.adv_data_path)
+    return DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size)
 
 
-def get_standard_mnist_dataset(path, batch_size):
-    sets = load_standard_mnist(path)
-    return [DataLoader(MNIST(s[0], s[1]), batch_size=batch_size) for s in sets]
+def get_standard_mnist_dataset(args):
+    train, dev, test = load_standard_mnist(os.path.join(args.data_dir, 'mnist.pkl'))
+    if args.first_n_samples is not None:
+        train = train[:args.first_n_samples]
+    return [DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size) for s in [train, dev, test]]
 
 
 if __name__ == '__main__':

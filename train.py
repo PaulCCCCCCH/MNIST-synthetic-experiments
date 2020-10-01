@@ -1,16 +1,22 @@
-import pickle
-import numpy as np
+import torch
 from models import LeNet, save_model
 import torch.optim as optim
 import torch.nn as nn
 from args import *
 from data_utils import get_standard_mnist_dataset, get_adv_mnist_dataset
+from utils import set_logger
 from models import load_model
+import logging
 
-if args.adv_model_name:
-    train = get_adv_mnist_dataset(args.adv_data_path, args.batch_size)
+set_logger(ARGS)
+logging.info("Called train.py with args:\n" + ARGS.toString())
+
+if ARGS.adv_data_path:
+    logging.info("Loading adversarial dataset")
+    train = get_adv_mnist_dataset(ARGS)
 else:
-    train, dev, test = get_standard_mnist_dataset(os.path.join(args.data_dir, 'mnist.pkl'), args.batch_size)
+    logging.info("Loading standard dataset")
+    train, dev, test = get_standard_mnist_dataset(ARGS)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -18,19 +24,20 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 lenet = LeNet()
 lenet.to(device)
 
-state_dict = load_model(args)
+state_dict = load_model(ARGS)
 if state_dict is not None:
-    print("Loading previous model with name: '{}'".format(args.model_name))
+    logging.info("Loading previous model with name: '{}'".format(ARGS.model_name))
     lenet.load_state_dict(state_dict)
 else:
-    print("No previous model found with name '{}', training a new one.".format(args.model_name))
+    logging.info("No previous model found with name '{}', training a new one.".format(ARGS.model_name))
 
 min_loss = float('inf')
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(lenet.parameters(), lr=args.learning_rate, momentum=args.momentum)
+optimizer = optim.SGD(lenet.parameters(), lr=ARGS.learning_rate, momentum=ARGS.momentum)
 
-for epoch in range(args.epoch):
+logging.info("Training...")
+for epoch in range(ARGS.epoch):
     epoch_loss = 0
     total = 0
     correct = 0
@@ -53,12 +60,12 @@ for epoch in range(args.epoch):
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-    print("Epoch {}, train loss: {}".format(epoch, epoch_loss))
-    print("Epoch {}, train accuracy: {}".format(epoch, correct / total))
+    logging.info("Epoch {}, train loss: {}".format(epoch, epoch_loss))
+    logging.info("Epoch {}, train accuracy: {}".format(epoch, correct / total))
 
     # Skip evaluation on dev set when training on adv MNIST and save
-    if args.adv_model_name:
-        save_model(lenet.state_dict(), args, adv=True)
+    if ARGS.adv_data_path:
+        save_model(lenet.state_dict(), ARGS, new=True)
 
     # Evaluate on dev set when training on standard MNIST
     else:
@@ -79,10 +86,10 @@ for epoch in range(args.epoch):
             # Save the model if it is the best so far
             if dev_loss < min_loss:
                 min_loss = dev_loss
-                print("Best model at epoch {}, model saved.".format(epoch))
-                save_model(lenet.state_dict(), args)
+                logging.info("Best model at epoch {}, model saved.".format(epoch))
+                save_model(lenet.state_dict(), ARGS)
 
-            print("Epoch {}, dev loss: {}".format(epoch, dev_loss))
-            print("Epoch {}, dev accuracy : {}".format(epoch, correct / total))
-            print()
+            logging.info("Epoch {}, dev loss: {}".format(epoch, dev_loss))
+            logging.info("Epoch {}, dev accuracy : {}".format(epoch, correct / total))
+    logging.info("Done")
 

@@ -8,7 +8,7 @@ import pickle
 import matplotlib as plt
 
 
-def attack_fgsm(model, device, testloader, epsilon):
+def attack_fgsm(model, testloader, device, epsilon):
     count = 0
     correct = 0
     adv_inputs = []
@@ -53,7 +53,7 @@ def attack_fgsm(model, device, testloader, epsilon):
     return final_acc, adv_inputs, adv_labels
 
 
-def attack_cw(model, testloader, device):
+def attack_cw(model, testloader, device, c_value):
     count = 0
     correct = 0
     adv_inputs = []
@@ -74,7 +74,7 @@ def attack_cw(model, testloader, device):
 
         else:
             # adv is of size (Batch, 784)
-            perturbed_data = cw_l2_attack(model, inputs, labels, device, c=args.c_value)
+            perturbed_data = cw_l2_attack(model, inputs, labels, device, c=c_value)
             new_outputs = model(perturbed_data)
             _, new_preds = torch.max(new_outputs.data, 1)
             correct += (new_preds == labels).sum().item()
@@ -98,32 +98,28 @@ if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     lenet = LeNet()
     lenet.to(device)
-    state_dict = load_model(args)
+    state_dict = load_model(ARGS)
     lenet.load_state_dict(state_dict)
     criterion = nn.CrossEntropyLoss()
 
 
 
-    if args.attack_name == 'fgsm':
-        adversarial_dir = os.path.join(args.adversarial_dir, args.attack_name)
-        if not os.path.exists(adversarial_dir):
-            os.mkdir(adversarial_dir)
-        _, _, test = get_standard_mnist_dataset(os.path.join(args.data_dir, 'mnist.pkl'), batch_size=1)
-        for epsilon in [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]:
+    if ARGS.attack_name == 'fgsm':
+        adversarial_dir = ARGS.adversarial_dir
+        _, _, test = get_standard_mnist_dataset(ARGS)
+        for epsilon in [0, 0.1, 0.2, 0.3, 0.4, 0.5]:
             print("Generating test set for epsilon {}".format(epsilon))
-            acc, adv_inputs, adv_labels = attack_fgsm(lenet, device, test, epsilon)
-            with open(os.path.join(adversarial_dir, "{}_epsilon_{}.pkl".format(args.attack_name, epsilon)), 'wb') as f:
+            acc, adv_inputs, adv_labels = attack_fgsm(lenet, test, device, epsilon)
+            with open(os.path.join(adversarial_dir, "{}_epsilon_{}.pkl".format(ARGS.attack_name, epsilon)), 'wb') as f:
                 pickle.dump([adv_inputs, adv_labels], f)
 
-    elif args.attack_name == 'cw':
-        adversarial_dir = os.path.join(args.adversarial_dir, "cw_c_{}".format(args.c_value))
-        if not os.path.exists(adversarial_dir):
-            os.mkdir(adversarial_dir)
-        print("Generating test set for CW attack")
-        _, _, test = get_standard_mnist_dataset(os.path.join(args.data_dir, 'mnist.pkl'), batch_size=args.batch_size)
-        acc, adv_inputs, adv_labels = attack_cw(lenet, test, device)
-
-        with open(os.path.join(adversarial_dir, "{}.pkl".format(args.attack_name)), 'wb') as f:
-            pickle.dump([adv_inputs, adv_labels], f)
+    elif ARGS.attack_name == 'cw':
+        adversarial_dir = ARGS.adversarial_dir
+        _, _, test = get_standard_mnist_dataset(ARGS)
+        for c_value in [0.1, 0.5, 1.0, 5.0]:
+            print("Generating samples for c = {}".format(c_value))
+            acc, adv_inputs, adv_labels = attack_cw(lenet, test, device, c_value)
+            with open(os.path.join(adversarial_dir, "{}_c_{}.pkl".format(ARGS.attack_name, c_value)), 'wb') as f:
+                pickle.dump([adv_inputs, adv_labels], f)
 
 
