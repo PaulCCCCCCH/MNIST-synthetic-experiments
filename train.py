@@ -40,6 +40,7 @@ for epoch in range(ARGS.epoch):
     correct = 0
     # Train
     for inputs_batch, labels_batch in train:
+        lenet.train()
         # Format input data
         inputs = inputs_batch.to(device)
         labels = labels_batch.to(device)
@@ -57,7 +58,7 @@ for epoch in range(ARGS.epoch):
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-    logging.info("Epoch {}, train loss: {}".format(epoch, epoch_loss))
+    logging.info("Epoch {}, total train loss: {}".format(epoch, epoch_loss))
     logging.info("Epoch {}, train accuracy: {}".format(epoch, correct / total))
 
     # Skip evaluation on dev set when training on adv MNIST and save
@@ -67,6 +68,7 @@ for epoch in range(ARGS.epoch):
     # Evaluate on dev set when training on standard MNIST
     else:
         with torch.no_grad():
+            lenet.evel()
             dev_loss = 0
             total = 0
             correct = 0
@@ -86,7 +88,7 @@ for epoch in range(ARGS.epoch):
                 logging.info("Best model at epoch {}, model saved.".format(epoch))
                 save_model(lenet.state_dict(), ARGS, ARGS.saveAsNew)
 
-            logging.info("Epoch {}, dev loss: {}".format(epoch, dev_loss))
+            logging.info("Epoch {}, total dev loss: {}".format(epoch, dev_loss))
             logging.info("Epoch {}, dev accuracy : {}".format(epoch, correct / total))
 
 logging.info("Done")

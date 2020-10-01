@@ -29,6 +29,7 @@ parser.add_argument('--test_data_only', help='Generate adv samples only for test
 # For training on adversarial data
 
 # For paired training only
+parser.add_argument('--paired_data_path', type=str, help='Path to the paired data to be used', default='')
 help_str = """
     Select regularization method.
     1: Gradient norm
@@ -41,13 +42,16 @@ parser.add_argument('--method', type=int, choices=range(1, 6), help=help_str, de
 
 help_str = """
     Select which object to be used as the input to calculate the regularization loss.
+    0: Logits of the cnn
     1: Activation value of the second to last layer
-    2: Logits of the cnn
 """
-parser.add_argument('--reg_object', type=int, choices=range(1, 3), help=help_str, default=1)
+parser.add_argument('--reg_object', type=int, choices=[0, 1], help=help_str, default=1)
 
 help_str = "Number of fc layers to use to produce the regularization loss"
 parser.add_argument('--reg_layers', type=int, choices=range(1, 3), help=help_str, default=1)
+parser.add_argument('--use_dropout', type=int, choices=[0, 1], help='Whether to use dropout as regularization')
+parser.add_argument('--lam', type=float, help='Coefficient for grad_loss for method 1', default=1.0)
+# parser.add_argument('--gamma', type=float, help='Coefficient for regularization loss', default=1.0)
 
 args = parser.parse_args()
 
@@ -80,15 +84,20 @@ class ARGS:
     test_only_data_path =   args.test_only_data_path
 
     # For paired training only
+    paired_data_path =      args.paired_data_path
     method =                args.method
     reg_object =            args.reg_object
     reg_layers =            args.reg_layers
+    use_dropout =           args.use_dropout
+    lam =                   args.lam
 
     # Modes
     isGeneration =          script_name.startswith('generate_adversarial')
     saveAsNew =             bool(args.new_model_name)
+    isPairedTrain =         script_name.startswith('train_paired')
 
     assert bool(data_path) ^ bool(test_only_data_path), "Require a data_path or a test_only_data_path argument, but not both"
+    assert not isPairedTrain or bool(paired_data_path), "Paired training requires a paired_data_path"
 
     # Check directories
     if not os.path.exists(args.save_dir):

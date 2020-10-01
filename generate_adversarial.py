@@ -108,6 +108,7 @@ if __name__ == '__main__':
     state_dict = load_model(ARGS)
     lenet.load_state_dict(state_dict)
     criterion = nn.CrossEntropyLoss()
+    lenet.eval()
 
     if ARGS.attack_name == 'fgsm':
         adversarial_dir = ARGS.adversarial_dir

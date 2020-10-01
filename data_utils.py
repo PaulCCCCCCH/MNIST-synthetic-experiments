@@ -49,8 +49,8 @@ def get_mnist_dataset_test_only(args):
     return DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size)
 
 
-def get_mnist_dataset(args):
-    train, dev, test = _load_mnist(args.data_path)
+def get_mnist_dataset(args, paired=False):
+    train, dev, test = _load_mnist(args.paired_data_path if paired else args.data_path)
     if args.first_n_samples is not None:
         train = train[:args.first_n_samples]
     return [DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size) for s in [train, dev, test]]

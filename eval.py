@@ -22,6 +22,7 @@ state_dict = load_model(ARGS)
 assert state_dict is not None, "Model with name '{}' not found".format(ARGS.model_name)
 print("Loading previous model with name: '{}'".format(ARGS.model_name))
 lenet.load_state_dict(state_dict)
+lenet.eval()
 
 # Testing
 correct = 0

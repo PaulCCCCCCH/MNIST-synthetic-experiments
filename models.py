@@ -54,6 +54,7 @@ class LeNet(nn.Module):
 class LeNetWithReg(nn.Module):
     def __init__(self, args):
         super(LeNetWithReg, self).__init__()
+        self.args = args
         self.conv1 = nn.Sequential(
             # (1, 28, 28) => (6, 28, 28)
             nn.Conv2d(in_channels=1,
@@ -75,28 +76,71 @@ class LeNetWithReg(nn.Module):
         )
 
         # A flatten layer here: (16, 5, 5) => (16*5*5)
-
         self.fc1 = nn.Sequential(
             # (16*5*5) => (120)
             nn.Linear(16 * 5 * 5, 120),
             nn.ReLU()
         )
-        self.fc2 = nn.Sequential(
-            # (120, 84)
-            nn.Linear(120, 84),
-            nn.ReLU()
-        )
+
+        if args.use_dropout:
+            self.fc2 = nn.Sequential(
+                # (120, 84)
+                nn.Linear(120, 84),
+                nn.ReLU(),
+                nn.Dropout()
+            )
+        else:
+            self.fc2 = nn.Sequential(
+                # (120, 84)
+                nn.Linear(120, 84),
+                nn.ReLU(),
+            )
 
         self.fc3 = nn.Linear(84, 10)
+
+        # CNN ends here. Following are regularization layers
+        if args.reg_layers == 1:
+            if args.method == 1:
+                if args.reg_object == 0:
+                    self.fc_reg = nn.Sequential(
+                        nn.Linear(84, 1, bias=not args.method == 5)
+                    )
+                elif args.reg_object == 1:
+                    self.fc_reg = nn.Sequential(
+                        nn.Linear(10, 1, bias=not args.method == 5)
+                    )
+
+        elif args.reg_layers == 2:
+            if args.method == 1:
+                if args.reg_object == 0:
+                    self.fc_reg = nn.Sequential(
+                        nn.Linear(84, 50, bias=not args.method == 5),
+                        nn.Linear(50, 1, bias=not args.method == 5)
+                    )
+                elif args.reg_object == 1:
+                    self.fc_reg = nn.Sequential(
+                        nn.Linear(10, 10, bias=not args.method == 5),
+                        nn.Linear(10, 1, bias=not args.method == 5)
+                    )
 
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
         x = x.view(x.size()[0], -1)
+
         x = self.fc1(x)
-        x = self.fc2(x)
-        x = self.fc3(x)
-        return x
+        h = self.fc2(x)
+
+        logit = self.fc3(h)
+
+        if self.args.reg_object == 0:
+            reg_obj = logit
+        elif self.args.reg_object == 1:
+            reg_obj = h
+
+        reg = self.fc_reg(reg_obj)
+
+        return logit, reg, reg_obj
 
 
 def save_model(state_dict: dict, args, new=False):
