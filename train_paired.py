@@ -46,12 +46,12 @@ lenet.train()
 min_loss = float('inf')
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(lenet.cnn_parameters, lr=ARGS.learning_rate, momentum=ARGS.momentum)
+streak = 0
 
 for epoch in range(ARGS.epoch):
     epoch_loss = 0
     total = 0
     correct = 0
-    streak = 0
     # Train
     for a, b in zip(iter(train), iter(paired_train)):
         inputs_batch, labels_batch = a
