@@ -55,8 +55,12 @@ def get_mnist_dataset(args, paired=False):
         train = train[:args.first_n_samples]
     return [DataLoader(MNIST(s[0], s[1]), batch_size=args.batch_size) for s in [train, dev, test]]
 
+def __test_loader(path):
+    train, dev, test = _load_mnist(path)
+    return [DataLoader(MNIST(s[0], s[1]), batch_size=50) for s in [train, dev, test]]
+
 
 if __name__ == '__main__':
-    train_set, dev_set, test_set = get_mnist_dataset(os.path.join('data', 'mnist.pkl'), 10)
+    train_set, dev_set, test_set = __test_loader(os.path.join('data', 'mnist.pkl'))
     a, b, c = _load_mnist(os.path.join('data', 'mnist.pkl'))
 

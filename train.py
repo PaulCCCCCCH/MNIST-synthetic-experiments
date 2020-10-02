@@ -38,6 +38,7 @@ for epoch in range(ARGS.epoch):
     epoch_loss = 0
     total = 0
     correct = 0
+    streak = 0
     # Train
     for inputs_batch, labels_batch in train:
         lenet.train()
@@ -68,7 +69,7 @@ for epoch in range(ARGS.epoch):
     # Evaluate on dev set when training on standard MNIST
     else:
         with torch.no_grad():
-            lenet.evel()
+            lenet.eval()
             dev_loss = 0
             total = 0
             correct = 0
@@ -84,9 +85,15 @@ for epoch in range(ARGS.epoch):
 
             # Save the model if it is the best so far
             if dev_loss < min_loss:
+                streak = 0
                 min_loss = dev_loss
                 logging.info("Best model at epoch {}, model saved.".format(epoch))
                 save_model(lenet.state_dict(), ARGS, ARGS.saveAsNew)
+            else:
+                streak += 1
+                if streak > ARGS.patience:
+                    logging.info("Early stopped")
+                    break
 
             logging.info("Epoch {}, total dev loss: {}".format(epoch, dev_loss))
             logging.info("Epoch {}, dev accuracy : {}".format(epoch, correct / total))

@@ -1,10 +1,10 @@
 @echo off
 
-echo "Training LeNet on standard MNIST"
-python train.py lenet_standard --data_path data\\mnist.pkl --epoch 120
+:: echo "Training LeNet on standard MNIST"
+:: python train.py lenet_standard --data_path data\\mnist.pkl --epoch 120
 
-echo Generating attack data using CW
-python generate_adversarial.py lenet_standard --data_path data\\mnist.pkl --attack_name cw
+:: echo Generating attack data using CW
+:: python generate_adversarial.py lenet_standard --data_path data\\mnist.pkl --attack_name cw
 
 for %%i in (0.1, 0.5, 1.0, 5.0) do (
 
@@ -16,8 +16,8 @@ for %%i in (0.1, 0.5, 1.0, 5.0) do (
 
 )
 
-echo "Generating attack data using FGSM"
-python generate_adversarial.py --data_path lenet_standard data\\mnist.pkl --attack_name fgsm
+:: echo "Generating attack data using FGSM"
+:: python generate_adversarial.py lenet_standard --data_path data\\mnist.pkl --attack_name fgsm
 
 for %%i in (0.1, 0.2, 0.3, 0.4, 0.5) do (
     echo "Training LeNet on FGSM adv data with e = %%i"

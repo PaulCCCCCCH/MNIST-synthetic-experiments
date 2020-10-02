@@ -1,4 +1,4 @@
-from models import LeNet, load_model
+from models import LeNet, LeNetWithReg, load_model
 import torch
 from args import *
 from data_utils import get_mnist_dataset, get_mnist_dataset_test_only
@@ -14,8 +14,10 @@ else:
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 logging.info("Using device: " + str(device))
 
-
-lenet = LeNet()
+if ARGS.use_reg_model:
+    lenet = LeNetWithReg(ARGS)
+else:
+    lenet = LeNet()
 lenet.to(device)
 
 state_dict = load_model(ARGS)
@@ -32,7 +34,10 @@ with torch.no_grad():
         inputs = inputs_batch.to(device)
         labels = labels_batch.to(device)
 
-        outputs = lenet(inputs)
+        if ARGS.use_reg_model:
+            outputs, _, _ = lenet(inputs)
+        else:
+            outputs = lenet(inputs)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()

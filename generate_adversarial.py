@@ -114,8 +114,8 @@ if __name__ == '__main__':
         adversarial_dir = ARGS.adversarial_dir
         train, dev, test = get_mnist_dataset(ARGS)
         datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
-        # for epsilon in [0, 0.1, 0.2, 0.3, 0.4, 0.5]:
-        for epsilon in [0.1]:
+        for epsilon in [0, 0.1, 0.2, 0.3, 0.4, 0.5]:
+        # for epsilon in [0.1]:
             logging.info("Generating fgsm data set for epsilon {}".format(epsilon))
             to_dump = []
             for dataset in datasets:
@@ -128,8 +128,8 @@ if __name__ == '__main__':
         adversarial_dir = ARGS.adversarial_dir
         train, dev, test = get_mnist_dataset(ARGS)
         datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
-        # for c_value in [0.1, 0.5, 1.0, 5.0]:
-        for c_value in [0.1]:
+        for c_value in [0.1, 0.5, 1.0, 5.0]:
+        # for c_value in [0.1]:
             logging.info("Generating cw data set for c = {}".format(c_value))
             to_dump = []
             for dataset in datasets:

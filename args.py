@@ -17,6 +17,8 @@ parser.add_argument('--learning_rate', type=float, help='Learning rate to use', 
 parser.add_argument('--momentum', type=float, help='Momentum of SGD algorithm', default=0.8)
 parser.add_argument('--first_n_samples', type=int, help='Only use first n samples of the training set', default=None)
 parser.add_argument('--new_model_name', type=str, help='If given, will save the trained model as a new one', default='')
+parser.add_argument('--use_reg_model', help='Use the model with regularization layers', action='store_true')
+parser.add_argument('--patience', type=int, help='Number of epochs w/o improvements before stopping', default=5)
 
 # For adversarial examples generation only
 parser.add_argument('--adversarial_dir', type=str, help='Place to store adversarial examples', default='adversarial')
@@ -30,6 +32,7 @@ parser.add_argument('--test_data_only', help='Generate adv samples only for test
 
 # For paired training only
 parser.add_argument('--paired_data_path', type=str, help='Path to the paired data to be used', default='')
+
 help_str = """
     Select regularization method.
     1: Gradient norm
@@ -38,19 +41,22 @@ help_str = """
     4:  ??? 
     5: L1 distance
 """
-parser.add_argument('--method', type=int, choices=range(1, 6), help=help_str, default=1)
+parser.add_argument('--method', type=int, metavar='M', choices=[0, 1, 2, 3, 5], help=help_str, default=1)
 
 help_str = """
     Select which object to be used as the input to calculate the regularization loss.
     0: Logits of the cnn
     1: Activation value of the second to last layer
 """
-parser.add_argument('--reg_object', type=int, choices=[0, 1], help=help_str, default=1)
+parser.add_argument('--reg_object', metavar='T', type=int, choices=[0, 1], help=help_str, default=0)
 
 help_str = "Number of fc layers to use to produce the regularization loss"
-parser.add_argument('--reg_layers', type=int, choices=range(1, 3), help=help_str, default=1)
-parser.add_argument('--use_dropout', type=int, choices=[0, 1], help='Whether to use dropout as regularization')
-parser.add_argument('--lam', type=float, help='Coefficient for grad_loss for method 1', default=1.0)
+parser.add_argument('--reg_layers', type=int, metavar='N', choices=[1, 2], help=help_str, default=1)
+
+help_str = 'Whether to use dropout as regularization'
+parser.add_argument('--use_dropout', type=int, metavar='D', choices=[0, 1], help=help_str, default=0)
+
+parser.add_argument('--lam', type=float, metavar='L', help='Coefficient for grad_loss for method 1', default=1.0)
 # parser.add_argument('--gamma', type=float, help='Coefficient for regularization loss', default=1.0)
 
 args = parser.parse_args()
@@ -74,6 +80,8 @@ class ARGS:
     learning_rate =         args.learning_rate
     momentum =              args.momentum
     first_n_samples =       args.first_n_samples
+    use_reg_model =         args.use_reg_model
+    patience =              args.patience
 
     # For adversarial examples generation only
     attack_name =           args.attack_name
@@ -98,6 +106,7 @@ class ARGS:
 
     assert bool(data_path) ^ bool(test_only_data_path), "Require a data_path or a test_only_data_path argument, but not both"
     assert not isPairedTrain or bool(paired_data_path), "Paired training requires a paired_data_path"
+    # assert not isPairedTrain or new_model_name, "Paired training requires a new_model_name"
 
     # Check directories
     if not os.path.exists(args.save_dir):

@@ -98,30 +98,34 @@ class LeNetWithReg(nn.Module):
 
         self.fc3 = nn.Linear(84, 10)
 
+        self.cnn_parameters = set(self.parameters())
+
         # CNN ends here. Following are regularization layers
         if args.reg_layers == 1:
-            if args.method == 1:
+            if args.method == 1 or args.method == 5:
                 if args.reg_object == 0:
-                    self.fc_reg = nn.Sequential(
-                        nn.Linear(84, 1, bias=not args.method == 5)
-                    )
-                elif args.reg_object == 1:
                     self.fc_reg = nn.Sequential(
                         nn.Linear(10, 1, bias=not args.method == 5)
                     )
+                elif args.reg_object == 1:
+                    self.fc_reg = nn.Sequential(
+                        nn.Linear(84, 1, bias=not args.method == 5)
+                    )
 
         elif args.reg_layers == 2:
-            if args.method == 1:
+            if args.method == 1 or args.method == 5:
                 if args.reg_object == 0:
-                    self.fc_reg = nn.Sequential(
-                        nn.Linear(84, 50, bias=not args.method == 5),
-                        nn.Linear(50, 1, bias=not args.method == 5)
-                    )
-                elif args.reg_object == 1:
                     self.fc_reg = nn.Sequential(
                         nn.Linear(10, 10, bias=not args.method == 5),
                         nn.Linear(10, 1, bias=not args.method == 5)
                     )
+                elif args.reg_object == 1:
+                    self.fc_reg = nn.Sequential(
+                        nn.Linear(84, 50, bias=not args.method == 5),
+                        nn.Linear(50, 1, bias=not args.method == 5)
+                    )
+        self.reg_parameters = set(self.parameters()) - self.cnn_parameters
+
 
     def forward(self, x):
         x = self.conv1(x)
@@ -138,7 +142,10 @@ class LeNetWithReg(nn.Module):
         elif self.args.reg_object == 1:
             reg_obj = h
 
-        reg = self.fc_reg(reg_obj)
+        if self.args.method == 1 or self.args.method == 5:
+            reg = self.fc_reg(reg_obj)
+        else:
+            reg = None
 
         return logit, reg, reg_obj
 

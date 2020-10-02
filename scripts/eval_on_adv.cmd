@@ -1,1 +1,1 @@
-python eval.py lenet_standard --data_path adversarial\\cw\\cw_c_1.0.pkl
+python eval.py lenet_standard --data_path adversarial\\fgsm\\fgsm_epsilon_0.3.pkl
