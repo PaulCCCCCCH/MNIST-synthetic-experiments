@@ -14,6 +14,7 @@ if ARGS.first_n_samples is not None:
     ARGS.first_n_samples = max(ARGS.first_n_samples, 40000)
 
 set_logger(ARGS)
+logging.info("Called train_paired.py with args:\n" + ARGS.toString())
 
 paired_train, paired_dev, paired_test = get_mnist_dataset(ARGS, paired=True)
 if ARGS.test_only_data_path:
@@ -69,7 +70,8 @@ for epoch in range(ARGS.epoch):
         # Training step
         optimizer.zero_grad()
 
-        if ARGS.method == 1:  # Gradient norm
+        if ARGS.method == 1:  # Gradient norm. Not working. Need research on element-wise grad on PyTorch.
+            raise NotImplementedError
             optimizer_reg = optim.SGD(lenet.reg_parameters, lr=ARGS.learning_rate, momentum=ARGS.momentum)
 
             # Update regularization layers 5 times
@@ -176,7 +178,8 @@ for epoch in range(ARGS.epoch):
             loss2 = criterion(logit2, labels_paired)
 
             # Calculate loss + l2 regularization
-            loss = loss1 + loss2 + torch.mean(torch.square(torch.norm(reg_obj1 - reg_obj2)))
+            # loss = loss1 + loss2 + torch.mean(torch.square(torch.norm(reg_obj1 - reg_obj2)))
+            loss = loss1 + loss2 + ARGS.reg * torch.mean(torch.square(torch.norm(reg_obj1 - reg_obj2)))
 
             # Update
             loss.backward()
@@ -199,7 +202,8 @@ for epoch in range(ARGS.epoch):
             loss2 = criterion(logit2, labels_paired)
 
             # Calculate loss + l2 regularization
-            loss = loss1 + loss2 + torch.mean(torch.square(torch.norm(reg_obj1 - reg_obj2, p=1)))
+            # loss = loss1 + loss2 + torch.mean(torch.square(torch.norm(reg_obj1 - reg_obj2, p=1)))
+            loss = loss1 + loss2 + ARGS.reg * torch.mean(torch.square(torch.norm(reg_obj1 - reg_obj2, p=1)))
 
             # Update
             loss.backward()

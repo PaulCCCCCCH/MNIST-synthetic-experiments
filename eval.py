@@ -6,6 +6,7 @@ import logging
 from utils import set_logger
 
 set_logger(ARGS)
+logging.info("Called eval.py with args:\n" + ARGS.toString())
 
 if ARGS.test_only_data_path:
     test = get_mnist_dataset_test_only(ARGS)
@@ -22,7 +23,7 @@ lenet.to(device)
 
 state_dict = load_model(ARGS)
 assert state_dict is not None, "Model with name '{}' not found".format(ARGS.model_name)
-print("Loading previous model with name: '{}'".format(ARGS.model_name))
+logging.info("Loading previous model with name: '{}'".format(ARGS.model_name))
 lenet.load_state_dict(state_dict)
 lenet.eval()
 
@@ -42,5 +43,5 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-print('Correct predictions: {} of {}'.format(correct, total))
-print('Accuracy of the network on 10000 test images: {}'.format(correct / total))
+logging.info('Correct predictions: {} of {}'.format(correct, total))
+logging.info('Accuracy of the network on 10000 test images: {}'.format(correct / total))

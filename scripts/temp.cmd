@@ -17,7 +17,7 @@ python train_paired.py lenet_standard ^
 --use_dropout %%d ^
 --lam %%l ^
 --new_model_name fgsm_0.3_onto_std_M%%m_T%%t_N%%n_D%%d_L%%l ^
---epoch 2
+--epoch 50
 
 python eval.py fgsm_0.3_onto_std_M%%m_T%%t_N%%n_D%%d_L%%l ^
 --test_only_data_path data\\reserved.pkl ^

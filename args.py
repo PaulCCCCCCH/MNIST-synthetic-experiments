@@ -41,7 +41,7 @@ help_str = """
     4:  ??? 
     5: L1 distance
 """
-parser.add_argument('--method', type=int, metavar='M', choices=[0, 1, 2, 3, 5], help=help_str, default=1)
+parser.add_argument('--method', type=int, metavar='M', choices=[0, 2, 3, 5], help=help_str, default=1)
 
 help_str = """
     Select which object to be used as the input to calculate the regularization loss.
@@ -56,7 +56,8 @@ parser.add_argument('--reg_layers', type=int, metavar='N', choices=[1, 2], help=
 help_str = 'Whether to use dropout as regularization'
 parser.add_argument('--use_dropout', type=int, metavar='D', choices=[0, 1], help=help_str, default=0)
 
-parser.add_argument('--lam', type=float, metavar='L', help='Coefficient for grad_loss for method 1', default=1.0)
+# parser.add_argument('--lam', type=float, metavar='L', help='Coefficient for grad_loss for method 1', default=1.0)
+parser.add_argument('--reg', type=float, metavar='R', help='Coeff for L1 and L2 Loss in method 3 and 5', default=1e-4)
 # parser.add_argument('--gamma', type=float, help='Coefficient for regularization loss', default=1.0)
 
 args = parser.parse_args()
@@ -97,7 +98,8 @@ class ARGS:
     reg_object =            args.reg_object
     reg_layers =            args.reg_layers
     use_dropout =           args.use_dropout
-    lam =                   args.lam
+    reg =                   args.reg
+    # lam =                   args.lam
 
     # Modes
     isGeneration =          script_name.startswith('generate_adversarial')
