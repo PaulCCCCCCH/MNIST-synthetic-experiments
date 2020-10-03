@@ -43,5 +43,5 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-logging.info('Correct predictions: {} of {}'.format(correct, total))
-logging.info('Accuracy of the network on 10000 test images: {}'.format(correct / total))
+logging.critical('Correct predictions: {} of {}'.format(correct, total))
+logging.critical('Accuracy of the network on 10000 test images: {}'.format(correct / total))
