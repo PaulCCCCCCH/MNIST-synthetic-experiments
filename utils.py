@@ -16,9 +16,10 @@ def set_logger(args):
                         format='%(asctime)s: %(message)s',
                         handlers=[logging.FileHandler(os.path.join(save_dir, 'log.txt')),
                                   logging.StreamHandler()])
-
+    """
     logging.basicConfig(level=logging.CRITICAL,
                         format='%(asctime)s: %(message)s',
                         handlers=[logging.FileHandler(os.path.join(save_dir, 'log.txt')),
                                   logging.FileHandler("results.txt"),
                                   logging.StreamHandler()])
+    """

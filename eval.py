@@ -6,12 +6,14 @@ import logging
 from utils import set_logger
 
 set_logger(ARGS)
-logging.info("Called eval.py with args:\n" + ARGS.toString())
 
 if ARGS.test_only_data_path:
     test = get_mnist_dataset_test_only(ARGS)
+    logging.info("Evaluating model {} on dataset {}".format(ARGS.model_name, ARGS.test_only_data_path))
 else:
     _, _, test = get_mnist_dataset(ARGS)
+    logging.info("Evaluating model {} on dataset {}".format(ARGS.model_name, ARGS.data_path))
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 logging.info("Using device: " + str(device))
 
@@ -43,5 +45,5 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-logging.critical('Correct predictions: {} of {}'.format(correct, total))
-logging.critical('Accuracy of the network on 10000 test images: {}'.format(correct / total))
+logging.info('Correct predictions: {} of {}'.format(correct, total))
+logging.info('Accuracy of the network on 10000 test images: {}'.format(correct / total))

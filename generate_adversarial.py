@@ -115,7 +115,7 @@ if __name__ == '__main__':
         train, dev, test = get_mnist_dataset(ARGS)
         datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
         for epsilon in [0, 0.1, 0.2, 0.3, 0.4, 0.5]:
-        # for epsilon in [0.1]:
+        # for epsilon in [0.35]:
             logging.info("Generating fgsm data set for epsilon {}".format(epsilon))
             to_dump = []
             for dataset in datasets:
