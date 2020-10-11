@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from attacks import fgsm_attack, cw_l2_attack
-from data_utils import get_mnist_dataset
+from data_utils import get_mnist_dataset, get_colored_mnist
 from args import *
 from models import LeNet, load_model
 import pickle
@@ -98,17 +98,21 @@ def attack_cw(model, loader, device, c_value):
 
 
 if __name__ == '__main__':
-
     set_logger(ARGS)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     logging.info("Using device: " + str(device))
 
-    lenet = LeNet()
-    lenet.to(device)
-    state_dict = load_model(ARGS)
-    lenet.load_state_dict(state_dict)
-    criterion = nn.CrossEntropyLoss()
-    lenet.eval()
+    if not ARGS.attack_name == 'colored':
+        logging.info('Loading model ' + ARGS.model_name)
+        lenet = LeNet(ARGS)
+        lenet.to(device)
+        state_dict = load_model(ARGS)
+        lenet.load_state_dict(state_dict)
+        criterion = nn.CrossEntropyLoss()
+        lenet.eval()
+    else:
+        logging.info('Color-biased data generation does not require a model. Skipping model loading.')
+        lenet = None
 
     if ARGS.attack_name == 'fgsm':
         adversarial_dir = ARGS.adversarial_dir
@@ -137,5 +141,21 @@ if __name__ == '__main__':
                 to_dump.append((adv_inputs, adv_labels))
             with open(os.path.join(adversarial_dir, "{}_c_{}.pkl".format(ARGS.attack_name, c_value)), 'wb') as f:
                 pickle.dump(to_dump, f)
+
+    # This is not really an attack, but it is put here for convenience, as it shares most of the logic
+    # with the attack methods.
+    elif ARGS.attack_name == 'colored':
+        adversarial_dir = ARGS.adversarial_dir
+        train, dev, test = get_colored_mnist(ARGS)
+        datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
+        logging.info("Generating dataset with color bias")
+        to_dump = []
+        for dataset in datasets:
+            to_dump.append(dataset)
+        with open(os.path.join(adversarial_dir, 'colored.pkl'), 'wb') as f:
+            pickle.dump(to_dump, f)
+
+    else:
+        raise NotImplementedError
 
 

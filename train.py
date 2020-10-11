@@ -18,7 +18,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 logging.info("Using device: " + str(device))
 
 # Initializing model
-lenet = LeNet()
+lenet = LeNet(ARGS)
 lenet.to(device)
 
 state_dict = load_model(ARGS)
@@ -45,6 +45,7 @@ for epoch in range(ARGS.epoch):
         # Format input data
         inputs = inputs_batch.to(device)
         labels = labels_batch.to(device)
+        print(inputs.shape)
 
         # Training step
         optimizer.zero_grad()

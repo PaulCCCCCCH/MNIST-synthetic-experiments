@@ -20,7 +20,7 @@ logging.info("Using device: " + str(device))
 if ARGS.use_reg_model:
     lenet = LeNetWithReg(ARGS)
 else:
-    lenet = LeNet()
+    lenet = LeNet(ARGS)
 lenet.to(device)
 
 state_dict = load_model(ARGS)

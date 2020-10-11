@@ -19,11 +19,12 @@ parser.add_argument('--first_n_samples', type=int, help='Only use first n sample
 parser.add_argument('--new_model_name', type=str, help='If given, will save the trained model as a new one', default='')
 parser.add_argument('--use_reg_model', help='Use the model with regularization layers', action='store_true')
 parser.add_argument('--patience', type=int, help='Number of epochs w/o improvements before stopping', default=5)
+parser.add_argument('--is_rgb_data', help='Is the data file in RGB format?', action='store_true')
 
 # For adversarial examples generation only
 parser.add_argument('--adversarial_dir', type=str, help='Place to store adversarial examples', default='adversarial')
 parser.add_argument('--attack_name', type=str, help='The attack to be performed', default='fgsm',
-                    choices=['fgsm', 'cw'])
+                    choices=['fgsm', 'cw', 'colored'])
 parser.add_argument('--test_data_only', help='Generate adv samples only for test set', action='store_true')
 # parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
 
@@ -83,6 +84,7 @@ class ARGS:
     first_n_samples =       args.first_n_samples
     use_reg_model =         args.use_reg_model
     patience =              args.patience
+    is_rgb_data =           args.is_rgb_data
 
     # For adversarial examples generation only
     attack_name =           args.attack_name

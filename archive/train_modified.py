@@ -33,7 +33,7 @@ for (train_set_idx, train_s) in enumerate(mnist_perturbed):
     model_name = files_mnist_perturbed[train_set_idx]
     print("training model on {}".format(model_name))
     # Start training
-    lenet = LeNet()
+    lenet = LeNet(ARGS)
     lenet.to(device)
 
     min_loss = float('inf')

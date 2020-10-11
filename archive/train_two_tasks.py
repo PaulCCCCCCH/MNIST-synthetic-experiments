@@ -28,7 +28,7 @@ for s in paths_mnist_perturbed:
     mnist_perturbed.append(np.load(s))
 
 # Start training
-lenet = LeNet()
+lenet = LeNet(ARGS)
 lenet.to(device)
 
 

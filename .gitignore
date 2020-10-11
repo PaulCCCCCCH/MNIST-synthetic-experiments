@@ -4,4 +4,5 @@ __pycache__/
 data/
 adversarial/
 archive/
-backup/
+record/
+.ipynb_checkpoints/
