@@ -19,9 +19,10 @@ class MyMNIST(Dataset):
         if self.transform:
             inputs = Image.fromarray(np.array(inputs.data), mode='RGB')
             inputs = self.transform(inputs)
+            labels = self.labels[index].squeeze()
         else:
             inputs = inputs.view(-1, 28, 28)
-        labels = torch.tensor(self.labels[index]).squeeze()
+            labels = torch.tensor(self.labels[index]).squeeze()
         print(inputs)
         print(labels)
 
@@ -61,25 +62,55 @@ class BiasedMNIST(MNIST):
         We suggest to researchers considering this benchmark for future researches.
     """
 
-    COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
-                  [0, 255, 255], [255, 128, 0], [255, 0, 128], [128, 0, 255], [128, 128, 128]]
+    # COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
+    #               [0, 255, 255], [255, 128, 0], [255, 0, 128], [128, 0, 255], [128, 128, 128]]
 
-    def __init__(self, root, train=True, transform=None, target_transform=None,
-                 download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True):
+    COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
+                  [0, 255, 255], [255, 195, 0], [255, 0, 195], [195, 0, 255], [195, 195, 195]]
+
+    def __init__(self, root, args, train=True, transform=None, target_transform=None,
+                 download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True,
+                 augment_mode=None):
+
         super().__init__(root, train=train, transform=transform,
                          target_transform=target_transform,
                          download=download)
+
+        self.args = args
+        self.held_out_data = self.data[50000:]
+        self.held_out_targets = self.targets[50000:]
+        self.data = self.data[:50000]
+        self.targets = self.targets[:50000]
+
+        # Set shuffler so that dataset will be the same order across different runs
+        self.shuffler = np.random.default_rng(seed=1)
+
+        if args.bias_mode == 'none':
+            self.BIASED_LABELS = set()
+        elif args.bias_mode == 'partial':
+            self.BIASED_LABELS = {5, 6, 7, 8, 9}
+        elif args.bias_mode == 'all':
+            self.BIASED_LABELS = {n for n in range(10)}
+        else:
+            raise NotImplementedError
+
         self.data_label_correlation = data_label_correlation
         self.n_confusing_labels = n_confusing_labels
         self.do_shuffle = do_shuffle
-        self.data, self.targets, self.biased_targets = self.build_biased_mnist()
 
+        self.data, self.targets, self.biased_targets = self.build_mnist()
         indices = np.arange(len(self.data))
-
         self._shuffle(indices)
         self.data = self.data[indices].numpy()
         self.targets = self.targets[indices]
         self.biased_targets = self.biased_targets[indices]
+
+        self.held_out_data, self.held_out_targets, self.held_out_biased_targets = self.build_mnist(held_out=True)
+        indices = np.arange(len(self.held_out_data))
+        self._shuffle(indices)
+        self.held_out_data = self.held_out_data[indices].numpy()
+        self.held_out_targets = self.held_out_targets[indices]
+        self.biased_targets = self.held_out_biased_targets[indices]
 
     @property
     def raw_folder(self):
@@ -91,9 +122,10 @@ class BiasedMNIST(MNIST):
 
     def _shuffle(self, iteratable):
         if self.do_shuffle:
-            np.random.shuffle(iteratable)
+            self.shuffler.shuffle(iteratable)
+            # np.random.shuffle(iteratable)
 
-    def _update_bias_indices(self, bias_indices, label):
+    def _update_bias_indices(self, bias_indices, label, held_out=False):
         """
         Modifies bias_indices.
         Args:
@@ -102,18 +134,20 @@ class BiasedMNIST(MNIST):
         """
         if self.n_confusing_labels > 9 or self.n_confusing_labels < 1:
             raise ValueError(self.n_confusing_labels)
-
-        indices = np.where((self.targets == label).numpy())[0]
+        targets = self.held_out_targets if held_out else self.targets
+        indices = np.where((targets == label).numpy())[0]
         self._shuffle(indices)
         indices = torch.LongTensor(indices)
 
         n_samples = len(indices)
         n_correlated_samples = int(n_samples * self.data_label_correlation)
-        n_decorrelated_per_class = int(np.ceil((n_samples - n_correlated_samples) / self.n_confusing_labels))
 
         correlated_indices = indices[:n_correlated_samples]
         bias_indices[label] = torch.cat([bias_indices[label], correlated_indices])
 
+        # The following has no effect when data_label_correlation is 1
+        ##########################
+        n_decorrelated_per_class = int(np.ceil((n_samples - n_correlated_samples) / self.n_confusing_labels))
         decorrelated_indices = torch.split(indices[n_correlated_samples:], n_decorrelated_per_class)
 
         other_labels = [_label % 10 for _label in range(label + 1, label + 1 + self.n_confusing_labels)]
@@ -122,11 +156,15 @@ class BiasedMNIST(MNIST):
         for idx, _indices in enumerate(decorrelated_indices):
             _label = other_labels[idx]
             bias_indices[_label] = torch.cat([bias_indices[_label], _indices])
+        ##########################
 
-    def _binary_to_colour(self, data, colour):
+    def _binary_to_colour(self, data, colour, augment=False):
         """
         Args:
-            data: grey-scale image of shape (N, 28, 28)
+            data: a batch of grey-scale images of shape (N, 28, 28)
+            colour: a colour to be used to fill the background for each image.
+                    If colour is None, then fill the background with a random
+                    colour from the colour pool instead.
         Returns:
             RGB image of shape (N, 28, 28, 3)
         """
@@ -135,19 +173,59 @@ class BiasedMNIST(MNIST):
         fg_data[data != 0] = 255
         fg_data[data == 0] = 0
         fg_data = torch.stack([fg_data, fg_data, fg_data], dim=1)
+        # fg_data: (N, 3, 28, 28)
 
         bg_data = torch.zeros_like(data)
         bg_data[data == 0] = 1
         bg_data[data != 0] = 0
         bg_data = torch.stack([bg_data, bg_data, bg_data], dim=3)
-        bg_data = bg_data * torch.ByteTensor(colour)
-        bg_data = bg_data.permute(0, 3, 1, 2)
+        # bg_data: (N, 28, 28, 3)
 
-        data = fg_data + bg_data
-        data = data.permute(0, 2, 3, 1)
+        if not augment:
+            # Dealing with biased label
+            if colour:
+                # Use the same color as backgrounds for all the images
+                bg_data = bg_data * torch.ByteTensor(colour)
+
+            # Dealing with unbiased label
+            else:
+                # Use random color for each sample
+                color_indices = np.random.randint(10, size=data.shape[0])
+                colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
+                colors = colors.unsqueeze(1).unsqueeze(2)
+                bg_data = bg_data * colors
+
+            bg_data = bg_data.permute(0, 3, 1, 2)
+
+            # data: (N, 3, 28, 28)
+            data = fg_data + bg_data
+            data = data.permute(0, 2, 3, 1)
+            # data: (N, 28, 28, 3)
+
+        else:
+            # Dealing with biased labels
+            if colour:
+                bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                colour_map = torch.tensor(self.COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+                bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
+            # Dealing with unbiased labels
+            else:
+                color_indices = np.random.randint(10, size=data.shape[0])
+                colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
+                colors = colors.unsqueeze(1).unsqueeze(2)
+                bg_data = bg_data * colors
+                bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                # Copied itself
+                bg_data = torch.stack([bg_data, bg_data], dim=1)  # (N, 2, 28, 28, 3)
+
+            bg_data = bg_data.permute(0, 4, 1, 2, 3)
+            data = fg_data.unsqueeze(2) + bg_data  # (N, 3, 2, 28, 28)
+            data = data.permute(0, 2, 3, 4, 1)
+
         return data
 
-    def _make_biased_mnist(self, indices, label):
+    def _make_biased_mnist(self, indices, label, held_out=False):
         """
         Args:
             indices: indices to be turned into biased images, shaped (N)
@@ -155,9 +233,25 @@ class BiasedMNIST(MNIST):
         Returns:
             a tuple (images, labels)
         """
-        return self._binary_to_colour(self.data[indices], self.COLOUR_MAP[label]), self.targets[indices]
+        data = self.held_out_data[indices] if held_out else self.data[indices]
+        targets = self.held_out_targets[indices] if held_out else self.targets[indices]
+        augment = not held_out and self.args.augment_mode != 'none'
+        return self._binary_to_colour(data, self.COLOUR_MAP[label], augment=augment), targets
 
-    def build_biased_mnist(self):
+    def _make_unbiased_mnist(self, indices, label, held_out=False):
+        """
+        Args:
+            indices: indices to be turned into biased images, shaped (N)
+            label: a scalar index specifying a target colour to be used
+        Returns:
+            a tuple (images, labels)
+        """
+        data = self.held_out_data[indices] if held_out else self.data[indices]
+        targets = self.held_out_targets[indices] if held_out else self.targets[indices]
+        augment = not held_out and self.args.augment_mode != 'none'
+        return self._binary_to_colour(data, None, augment=augment), targets
+
+    def build_mnist(self, held_out=False):
         """
         Returns:
             data: batch of images of shape (N, 28, 28, 3)
@@ -168,14 +262,18 @@ class BiasedMNIST(MNIST):
         bias_indices = {label: torch.LongTensor() for label in range(n_labels)}
 
         for label in range(n_labels):
-            self._update_bias_indices(bias_indices, label)
+            self._update_bias_indices(bias_indices, label, held_out=held_out)
 
         data = torch.ByteTensor()
         targets = torch.LongTensor()
         biased_targets = []
 
         for bias_label, indices in bias_indices.items():
-            _data, _targets = self._make_biased_mnist(indices, bias_label)
+            if bias_label not in self.BIASED_LABELS or held_out:
+                _data, _targets = self._make_unbiased_mnist(indices, bias_label, held_out)
+            else:
+                _data, _targets = self._make_biased_mnist(indices, bias_label, held_out)
+
             data = torch.cat([data, _data])
             targets = torch.cat([targets, _targets])
             biased_targets.extend([bias_label] * len(indices))
@@ -255,16 +353,18 @@ def get_standard_mnist(args):
 def get_colored_mnist(args):
     train = True
     data_label_correlation = 1
-    do_shuffle = True
+    do_shuffle = not args.ordered
     # TODO: Find out the effect of this parameter
     n_confusing_labels = 9
 
     dataset = BiasedMNIST(os.path.join('data', 'new'),
+                          args,
                           train=train,
                           download=True,
                           data_label_correlation=data_label_correlation,
                           n_confusing_labels=n_confusing_labels,
-                          do_shuffle=do_shuffle)
+                          do_shuffle=do_shuffle,
+                          augment_mode=args.augment_mode)
 
     """
     train = MyMNIST(dataset.train_data[:40000], dataset.targets[:40000])
@@ -275,7 +375,11 @@ def get_colored_mnist(args):
     """
     train = (dataset.data[:40000], dataset.targets[:40000])
     dev = (dataset.data[40000:50000], dataset.targets[40000:50000])
-    test = (dataset.data[50000:60000], dataset.targets[50000: 60000])
+    test = (dataset.held_out_data, dataset.held_out_targets)
+    print(dataset.targets[0:40000])
+    print(dataset.targets[40000:50000])
+    print(dataset.targets[50000:60000])
+    print(dataset.held_out_targets)
     return train, dev, test
 
 

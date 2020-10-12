@@ -9,8 +9,8 @@ parser = argparse.ArgumentParser()
 # For training and testing
 parser.add_argument('model_name', type=str, help='Give model name, this will name logs and checkpoints.')
 parser.add_argument('--data_path', type=str, help='Path to the file with train, dev and test data', default='')
-parser.add_argument('--save_dir', type=str, help='Root directory where all models are saved', default='models')
 parser.add_argument('--test_only_data_path', type=str, help='Path to the file containing only test samples', default='')
+parser.add_argument('--save_dir', type=str, help='Root directory where all models are saved', default='models')
 parser.add_argument('--epoch', type=int, help='Max number of epochs to train', default=50)
 parser.add_argument('--batch_size', type=int, help='Batch size to use for training', default=50)
 parser.add_argument('--learning_rate', type=float, help='Learning rate to use', default=0.001)
@@ -26,6 +26,10 @@ parser.add_argument('--adversarial_dir', type=str, help='Place to store adversar
 parser.add_argument('--attack_name', type=str, help='The attack to be performed', default='fgsm',
                     choices=['fgsm', 'cw', 'colored'])
 parser.add_argument('--test_data_only', help='Generate adv samples only for test set', action='store_true')
+# For colored examples only
+parser.add_argument('--bias_mode', help='How many of the labels will have bias?', choices=['none', 'partial', 'all'], default='none')
+parser.add_argument('--ordered', help='Order biased samples by digits', action='store_true')
+parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=['none', 'basic'], default='none')
 # parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
 
 
@@ -33,6 +37,7 @@ parser.add_argument('--test_data_only', help='Generate adv samples only for test
 
 # For paired training only
 parser.add_argument('--paired_data_path', type=str, help='Path to the paired data to be used', default='')
+parser.add_argument('--is_augmented', type=str, help='Whether the paired dataset is augmented', action='store_true')
 
 help_str = """
     Select regularization method.
@@ -86,10 +91,13 @@ class ARGS:
     patience =              args.patience
     is_rgb_data =           args.is_rgb_data
 
-    # For adversarial examples generation only
+    # For dataset generation only
     attack_name =           args.attack_name
     adversarial_dir =       os.path.join(args.adversarial_dir, attack_name)
     test_data_only =        args.test_data_only
+    bias_mode =             args.bias_mode
+    ordered =               args.ordered
+    augment_mode =          args.augment_mode
 
     # For evaluation
     test_only_data_path =   args.test_only_data_path
@@ -101,6 +109,7 @@ class ARGS:
     reg_layers =            args.reg_layers
     use_dropout =           args.use_dropout
     reg =                   args.reg
+    is_augmented =          args.is_augmented
     # lam =                   args.lam
 
     # Modes
@@ -111,6 +120,8 @@ class ARGS:
     assert bool(data_path) ^ bool(test_only_data_path), "Require a data_path or a test_only_data_path argument, but not both"
     assert not isPairedTrain or bool(paired_data_path), "Paired training requires a paired_data_path"
     # assert not isPairedTrain or new_model_name, "Paired training requires a new_model_name"
+    assert attack_name == 'colored' or not bias_mode, "Partial bias is only supported by colored sample generation"
+    assert attack_name == 'colored' or not ordered, "ordered field is only supported by colored sample generation"
 
     # Check directories
     if not os.path.exists(args.save_dir):

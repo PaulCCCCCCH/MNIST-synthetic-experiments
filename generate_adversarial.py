@@ -152,7 +152,7 @@ if __name__ == '__main__':
         to_dump = []
         for dataset in datasets:
             to_dump.append(dataset)
-        with open(os.path.join(adversarial_dir, 'colored.pkl'), 'wb') as f:
+        with open(os.path.join(adversarial_dir, 'colored_{}.pkl'.format(ARGS.bias_mode)), 'wb') as f:
             pickle.dump(to_dump, f)
 
     else:

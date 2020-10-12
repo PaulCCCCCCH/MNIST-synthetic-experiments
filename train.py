@@ -3,7 +3,7 @@ from models import LeNet, save_model
 import torch.optim as optim
 import torch.nn as nn
 from args import *
-from data_utils import get_mnist_dataset, get_mnist_dataset_test_only
+from data_utils import get_mnist_dataset, get_mnist_dataset_test_only, get_colored_mnist
 from utils import set_logger
 from models import load_model
 import logging
@@ -45,7 +45,6 @@ for epoch in range(ARGS.epoch):
         # Format input data
         inputs = inputs_batch.to(device)
         labels = labels_batch.to(device)
-        print(inputs.shape)
 
         # Training step
         optimizer.zero_grad()

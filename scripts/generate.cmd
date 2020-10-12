@@ -9,6 +9,11 @@ python generate_adversarial.py lenet_standard --data_path data\\mnist.pkl --atta
 echo "Generating attack data using FGSM"
 python generate_adversarial.py lenet_standard --data_path data\\mnist.pkl --attack_name fgsm
 
-echo "Generating data with color bias"
-python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored
+echo "Generating data with background randomly colored"
+python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode none
 
+echo "Generating data with color bias for digits 5-9"
+python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode partial
+
+echo "Generating data with color bias for all digits"
+python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode all
