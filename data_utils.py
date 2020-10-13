@@ -9,22 +9,35 @@ from torchvision import transforms
 
 
 class MyMNIST(Dataset):
-    def __init__(self, inputs, labels, transform=None):
+    def __init__(self, inputs, labels, transform=None, mode: str=None):
         self.inputs = inputs
         self.labels = labels
         self.transform = transform
+        self.mode = mode
 
     def __getitem__(self, index):
         inputs = torch.tensor(self.inputs[index])
+        # Data need to be in RGB format if transform is provided
         if self.transform:
-            inputs = Image.fromarray(np.array(inputs.data), mode='RGB')
+            # mode is used to specify how to handle augmented data
+            if self.mode is None:
+                data = inputs.data
+            elif self.mode == 'pick_first':
+                data = inputs.data[0]
+            elif self.mode == 'pick_random':
+                data = inputs.data[np.random.randint(inputs.shape[0])]
+            else:
+                # Expect mode to be an integer
+                assert self.mode.isdigit() and self.mode < inputs.shape[0], \
+                    'mode has to be an integer between 0 and {}'.format(inputs.shape[0])
+                data = inputs.data[int(self.mode)]
+
+            inputs = Image.fromarray(np.array(data), mode='RGB')
             inputs = self.transform(inputs)
             labels = self.labels[index].squeeze()
         else:
             inputs = inputs.view(-1, 28, 28)
             labels = torch.tensor(self.labels[index]).squeeze()
-        print(inputs)
-        print(labels)
 
         return inputs, labels
 
@@ -69,8 +82,7 @@ class BiasedMNIST(MNIST):
                   [0, 255, 255], [255, 195, 0], [255, 0, 195], [195, 0, 255], [195, 195, 195]]
 
     def __init__(self, root, args, train=True, transform=None, target_transform=None,
-                 download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True,
-                 augment_mode=None):
+                 download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True):
 
         super().__init__(root, train=train, transform=transform,
                          target_transform=target_transform,
@@ -83,6 +95,7 @@ class BiasedMNIST(MNIST):
         self.targets = self.targets[:50000]
 
         # Set shuffler so that dataset will be the same order across different runs
+        # This is to make sure that training set is in the same order as the paired set.
         self.shuffler = np.random.default_rng(seed=1)
 
         if args.bias_mode == 'none':
@@ -147,6 +160,7 @@ class BiasedMNIST(MNIST):
 
         # The following has no effect when data_label_correlation is 1
         ##########################
+        """
         n_decorrelated_per_class = int(np.ceil((n_samples - n_correlated_samples) / self.n_confusing_labels))
         decorrelated_indices = torch.split(indices[n_correlated_samples:], n_decorrelated_per_class)
 
@@ -156,6 +170,7 @@ class BiasedMNIST(MNIST):
         for idx, _indices in enumerate(decorrelated_indices):
             _label = other_labels[idx]
             bias_indices[_label] = torch.cat([bias_indices[_label], _indices])
+        """
         ##########################
 
     def _binary_to_colour(self, data, colour, augment=False):
@@ -215,12 +230,14 @@ class BiasedMNIST(MNIST):
                 colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
                 colors = colors.unsqueeze(1).unsqueeze(2)
                 bg_data = bg_data * colors
-                bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
-                # Copied itself
-                bg_data = torch.stack([bg_data, bg_data], dim=1)  # (N, 2, 28, 28, 3)
+                bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                # Copy itself
+                # bg_data = torch.stack([bg_data, bg_data], dim=1)  # (N, 2, 28, 28, 3)
+                bg_data = bg_data.repeat((1, 10, 1, 1, 1))  # (N, 10, 28, 28, 3)
 
             bg_data = bg_data.permute(0, 4, 1, 2, 3)
-            data = fg_data.unsqueeze(2) + bg_data  # (N, 3, 2, 28, 28)
+            fg_data = fg_data.unsqueeze(2)  # (N, 3, 1, 28, 28)
+            data = fg_data + bg_data  # (N, 3, 10, 28, 28)
             data = data.permute(0, 2, 3, 4, 1)
 
         return data
@@ -258,10 +275,13 @@ class BiasedMNIST(MNIST):
             targets: labels of shape (N) corresponding to data
             biased_targets: index of background color to be used, shaped (N)
         """
-        n_labels = self.targets.max().item() + 1
-        bias_indices = {label: torch.LongTensor() for label in range(n_labels)}
+        if (self.args.augment_mode == 'clipped') or self.args.clipped and not held_out:
+            all_labels = range(5, 10)
+        else:
+            all_labels = range(self.targets.max().item() + 1)
+        bias_indices = {label: torch.LongTensor() for label in all_labels}
 
-        for label in range(n_labels):
+        for label in all_labels:
             self._update_bias_indices(bias_indices, label, held_out=held_out)
 
         data = torch.ByteTensor()
@@ -274,7 +294,16 @@ class BiasedMNIST(MNIST):
             else:
                 _data, _targets = self._make_biased_mnist(indices, bias_label, held_out)
 
+            print(_data.shape)
+            print(_data.dtype)
+
+            #############################################
+            # TODO: Why is this step taking 10 times larger space than when test on jupyter notebook?
+            # They have exactly the same size and dtype in both settings.
+            #############################################
             data = torch.cat([data, _data])
+            print(data.shape)
+            print(data.dtype)
             targets = torch.cat([targets, _targets])
             biased_targets.extend([bias_label] * len(indices))
 
@@ -319,7 +348,6 @@ def get_mnist_dataset_test_only(args):
 
 
 def get_mnist_dataset(args, paired=False):
-
     train, dev, test = _load_mnist(args.paired_data_path if paired else args.data_path)
     if args.first_n_samples is not None:
         train = train[:args.first_n_samples]
@@ -331,7 +359,13 @@ def get_mnist_dataset(args, paired=False):
     else:
         transform = None
 
-    return [DataLoader(MyMNIST(s[0], s[1], transform), batch_size=args.batch_size) for s in [train, dev, test]]
+    if args.augment_data_mode and paired:
+        train_loader = DataLoader(MyMNIST(train[0], train[1], transform, args.augment_data_mode), batch_size=args.batch_size)
+        dev_loader = DataLoader(MyMNIST(dev[0], dev[1], transform, args.augment_data_mode), batch_size=args.batch_size)
+        test_loader = DataLoader(MyMNIST(test[0], test[1], transform), batch_size=args.batch_size)
+        return train_loader, dev_loader, test_loader
+    else:
+        return [DataLoader(MyMNIST(s[0], s[1], transform), batch_size=args.batch_size) for s in [train, dev, test]]
 
 
 def __test_loader(path):
@@ -363,8 +397,7 @@ def get_colored_mnist(args):
                           download=True,
                           data_label_correlation=data_label_correlation,
                           n_confusing_labels=n_confusing_labels,
-                          do_shuffle=do_shuffle,
-                          augment_mode=args.augment_mode)
+                          do_shuffle=do_shuffle)
 
     """
     train = MyMNIST(dataset.train_data[:40000], dataset.targets[:40000])
@@ -373,13 +406,23 @@ def get_colored_mnist(args):
 
     return [DataLoader(s, batch_size=args.batch_size) for s in [train, dev, test]]
     """
-    train = (dataset.data[:40000], dataset.targets[:40000])
-    dev = (dataset.data[40000:50000], dataset.targets[40000:50000])
-    test = (dataset.held_out_data, dataset.held_out_targets)
+    data_size = dataset.data.shape[0]
+    train_size = int(data_size * 0.8)
+    dev_size = int(data_size * 0.2)
+    train = (dataset.data[0:train_size].astype(np.uint8), dataset.targets[:train_size])
+
+    dev = (dataset.data[train_size:train_size + dev_size].astype(np.uint8), dataset.targets[train_size:train_size + dev_size])
+
+    test = (dataset.held_out_data.astype(np.uint8), dataset.held_out_targets)
+
     print(dataset.targets[0:40000])
     print(dataset.targets[40000:50000])
     print(dataset.targets[50000:60000])
     print(dataset.held_out_targets)
+
+    print("Training set size: {}".format(train_size))
+    print("Dev set size: {}".format(dev_size))
+    print("Test set size: {}".format(dataset.held_out_data.shape[0]))
     return train, dev, test
 
 

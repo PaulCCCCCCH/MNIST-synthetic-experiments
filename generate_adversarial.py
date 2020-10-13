@@ -146,13 +146,18 @@ if __name__ == '__main__':
     # with the attack methods.
     elif ARGS.attack_name == 'colored':
         adversarial_dir = ARGS.adversarial_dir
+        filename = 'colored_{}{}'.format(ARGS.bias_mode, '' if ARGS.augment_mode == 'none' else '_aug_{}'.format(ARGS.augment_mode))
+        if ARGS.clipped:
+            filename += "_clipped"
+        filename += '.pkl'
+
         train, dev, test = get_colored_mnist(ARGS)
         datasets = [None, None, test] if ARGS.test_data_only else [train, dev, test]
         logging.info("Generating dataset with color bias")
         to_dump = []
         for dataset in datasets:
             to_dump.append(dataset)
-        with open(os.path.join(adversarial_dir, 'colored_{}.pkl'.format(ARGS.bias_mode)), 'wb') as f:
+        with open(os.path.join(adversarial_dir, filename), 'wb') as f:
             pickle.dump(to_dump, f)
 
     else:

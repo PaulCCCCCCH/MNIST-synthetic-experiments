@@ -56,9 +56,11 @@ class LeNetWithReg(nn.Module):
     def __init__(self, args):
         super(LeNetWithReg, self).__init__()
         self.args = args
+
+        in_channels = 3 if args.is_rgb_data else 1
         self.conv1 = nn.Sequential(
             # (1, 28, 28) => (6, 28, 28)
-            nn.Conv2d(in_channels=1,
+            nn.Conv2d(in_channels=in_channels,
                       out_channels=6,
                       kernel_size=5,
                       padding=2),

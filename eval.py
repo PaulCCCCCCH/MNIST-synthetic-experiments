@@ -41,6 +41,7 @@ with torch.no_grad():
             outputs, _, _ = lenet(inputs)
         else:
             outputs = lenet(inputs)
+
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()

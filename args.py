@@ -29,15 +29,16 @@ parser.add_argument('--test_data_only', help='Generate adv samples only for test
 # For colored examples only
 parser.add_argument('--bias_mode', help='How many of the labels will have bias?', choices=['none', 'partial', 'all'], default='none')
 parser.add_argument('--ordered', help='Order biased samples by digits', action='store_true')
-parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=['none', 'basic'], default='none')
+parser.add_argument('--clipped', help='Clip dataset to contain only biased digits', action='store_true')
+parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=['none', 'basic', 'clipped'], default='none')
 # parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
-
-
-# For training on adversarial data
 
 # For paired training only
 parser.add_argument('--paired_data_path', type=str, help='Path to the paired data to be used', default='')
-parser.add_argument('--is_augmented', type=str, help='Whether the paired dataset is augmented', action='store_true')
+aug_mode_choices = ['pick_first', 'pick_random', 'a digit']
+parser.add_argument('--augment_data_mode', type=str, default='',
+                    help='In which way do we use the augment data? Choose from {}'.format(aug_mode_choices))
+parser.add_argument('--is_clipped_data', action='store_true', help='Is the augmented data clipped?')
 
 help_str = """
     Select regularization method.
@@ -47,7 +48,7 @@ help_str = """
     4:  ??? 
     5: L1 distance
 """
-parser.add_argument('--method', type=int, metavar='M', choices=[0, 2, 3, 5], help=help_str, default=1)
+parser.add_argument('--method', type=int, metavar='M', choices=[0, 2, 3, 5], help=help_str, default=3)
 
 help_str = """
     Select which object to be used as the input to calculate the regularization loss.
@@ -60,7 +61,7 @@ help_str = "Number of fc layers to use to produce the regularization loss"
 parser.add_argument('--reg_layers', type=int, metavar='N', choices=[1, 2], help=help_str, default=1)
 
 help_str = 'Whether to use dropout as regularization'
-parser.add_argument('--use_dropout', type=int, metavar='D', choices=[0, 1], help=help_str, default=0)
+parser.add_argument('--use_dropout', type=int, metavar='D', choices=[0, 1], help=help_str, default=1)
 
 # parser.add_argument('--lam', type=float, metavar='L', help='Coefficient for grad_loss for method 1', default=1.0)
 parser.add_argument('--reg', type=float, metavar='R', help='Coeff for L1 and L2 Loss in method 3 and 5', default=1e-4)
@@ -98,6 +99,7 @@ class ARGS:
     bias_mode =             args.bias_mode
     ordered =               args.ordered
     augment_mode =          args.augment_mode
+    clipped =               args.clipped
 
     # For evaluation
     test_only_data_path =   args.test_only_data_path
@@ -109,18 +111,26 @@ class ARGS:
     reg_layers =            args.reg_layers
     use_dropout =           args.use_dropout
     reg =                   args.reg
-    is_augmented =          args.is_augmented
+    augment_data_mode =     args.augment_data_mode
+    is_clipped_data =       args.is_clipped_data
     # lam =                   args.lam
 
     # Modes
     isGeneration =          script_name.startswith('generate_adversarial')
+    isAugmentation =        isGeneration and augment_mode != 'none'
     saveAsNew =             bool(args.new_model_name)
     isPairedTrain =         script_name.startswith('train_paired')
 
     assert bool(data_path) ^ bool(test_only_data_path), "Require a data_path or a test_only_data_path argument, but not both"
     assert not isPairedTrain or bool(paired_data_path), "Paired training requires a paired_data_path"
+    assert not augment_data_mode or isPairedTrain, "Augment data can only be used in paired training"
+    assert not augment_data_mode or augment_data_mode.isdigit() or augment_data_mode in aug_mode_choices, \
+        "Augment data can only be used in paired training"
+    assert not is_clipped_data or augment_data_mode, "is_clipped_data is only for training paired with augmented data"
     # assert not isPairedTrain or new_model_name, "Paired training requires a new_model_name"
-    assert attack_name == 'colored' or not bias_mode, "Partial bias is only supported by colored sample generation"
+    assert not (clipped and isAugmentation), "'Clipped' arg is only for colored dataset generation. To clip data in" \
+                                             "augmentation, use '--augment_mode clipped' instead."
+    assert attack_name == 'colored' or bias_mode == 'none', "Partial bias is only supported by colored sample generation"
     assert attack_name == 'colored' or not ordered, "ordered field is only supported by colored sample generation"
 
     # Check directories
