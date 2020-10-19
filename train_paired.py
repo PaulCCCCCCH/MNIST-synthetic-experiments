@@ -64,7 +64,9 @@ for epoch in range(ARGS.epoch):
         labels_paired = labels_batch_paired.to(device)
 
         # Check for the first batch whether data are actually in pairs
-        if epoch_loss == 0:
+        if epoch == 0 and epoch_loss == 0:
+            # print(labels)
+            # print(labels_paired)
             assert torch.equal(labels, labels_paired), "Data are not in pairs!"
 
         # Training step

@@ -220,12 +220,21 @@ class BiasedMNIST(MNIST):
         else:
             # Dealing with biased labels
             if colour:
-                bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
-                colour_map = torch.tensor(self.COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
-                bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+                if self.args.augment_mode == 'noise':
+                    bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
+                    size = list(bg_data.shape)
+                    size[1] = 10
+                    bg_data = (256 * (torch.ones(size=size) - 0.5) + 128) * bg_data
+                    bg_data = bg_data.to(torch.uint8)
 
+                else:
+                    # Generate one image for each background color
+                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                    colour_map = torch.tensor(self.COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+                    bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
             # Dealing with unbiased labels
             else:
+                # Use one random background color and repeat 10 times
                 color_indices = np.random.randint(10, size=data.shape[0])
                 colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
                 colors = colors.unsqueeze(1).unsqueeze(2)
