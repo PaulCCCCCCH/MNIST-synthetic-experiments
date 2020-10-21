@@ -8,7 +8,7 @@ from PIL import Image
 
 # with open(os.path.join('data',  'mnist.pkl'), 'rb') as f:
 # with open(os.path.join('adversarial',  'fgsm', 'fgsm_epsilon_0.2.pkl'), 'rb') as f:
-with open(os.path.join('adversarial',  'colored', 'colored_partial_aug_noise.pkl'), 'rb') as f:
+with open(os.path.join('adversarial',  'colored', 'colored_partial_aug_strips.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
 
 transform = transforms.Compose([

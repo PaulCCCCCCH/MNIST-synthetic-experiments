@@ -81,6 +81,10 @@ class BiasedMNIST(MNIST):
     COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
                   [0, 255, 255], [255, 195, 0], [255, 0, 195], [195, 0, 255], [195, 195, 195]]
 
+    OTHER_COLOUR_MAP = [[165, 0, 0], [0, 165, 0], [0, 0, 165], [135, 135, 0], [135, 0, 135],
+                        [0, 165, 165], [165, 105, 0], [165, 0, 105], [105, 0, 165], [105, 105, 105]]
+    OTHER_COLOUR_MAP.reverse()
+
     def __init__(self, root, args, train=True, transform=None, target_transform=None,
                  download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True):
 
@@ -224,7 +228,38 @@ class BiasedMNIST(MNIST):
                     bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
                     size = list(bg_data.shape)
                     size[1] = 10
-                    bg_data = (256 * (torch.ones(size=size) - 0.5) + 128) * bg_data
+                    bg_data = (256 * (torch.rand(size=size) - 0.5) + 128) * bg_data
+                    bg_data = bg_data.to(torch.uint8)
+
+                elif self.args.augment_mode == 'noise_weak':
+                    bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
+                    size = list(bg_data.shape)
+                    size[1] = 10
+                    bg_data = (64 * (torch.rand(size=size) - 0.5) + 128) * bg_data
+                    bg_data = bg_data.to(torch.uint8)
+
+                elif self.args.augment_mode == 'noise_minor':
+                    bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
+                    size = list(bg_data.shape)
+                    size[1] = 10
+                    bg_data = (20 * (torch.rand(size=size) - 0.5) + 128) * bg_data
+                    bg_data = bg_data.to(torch.uint8)
+
+                elif self.args.augment_mode == 'other_colors':
+                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                    colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+                    bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
+                elif self.args.augment_mode == 'strips':
+                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                    colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+
+                    strips = torch.zeros_like(bg_data)  # (N, 1, 28, 28, 3)
+                    indices = np.arange(bg_data.shape[2])
+                    indices = np.where(indices % 5 < 2)
+                    strips[:, :, indices, :, :] = 1
+                    bg_data = strips * bg_data  # element-wise product, shape unchanged
+                    bg_data = bg_data * colour_map
                     bg_data = bg_data.to(torch.uint8)
 
                 else:
@@ -232,6 +267,7 @@ class BiasedMNIST(MNIST):
                     bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
                     colour_map = torch.tensor(self.COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
                     bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
             # Dealing with unbiased labels
             else:
                 # Use one random background color and repeat 10 times

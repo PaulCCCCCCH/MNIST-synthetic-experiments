@@ -30,7 +30,7 @@ parser.add_argument('--test_data_only', help='Generate adv samples only for test
 parser.add_argument('--bias_mode', help='How many of the labels will have bias?', choices=['none', 'partial', 'all'], default='none')
 parser.add_argument('--ordered', help='Order biased samples by digits', action='store_true')
 parser.add_argument('--clipped', help='Clip dataset to contain only biased digits', action='store_true')
-parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=['none', 'basic', 'clipped', 'noise'], default='none')
+parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=['none', 'basic', 'clipped', 'noise', 'noise_weak', 'noise_minor', 'other_colors', 'strips'], default='none')
 # parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
 
 # For paired training only
