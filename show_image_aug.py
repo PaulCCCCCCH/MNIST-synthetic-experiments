@@ -8,7 +8,7 @@ from PIL import Image
 
 # with open(os.path.join('data',  'mnist.pkl'), 'rb') as f:
 # with open(os.path.join('adversarial',  'fgsm', 'fgsm_epsilon_0.2.pkl'), 'rb') as f:
-with open(os.path.join('adversarial',  'colored', 'colored_partial_aug_strips.pkl'), 'rb') as f:
+with open(os.path.join('adversarial',  'colored', 'colored_partial_aug_random_pure.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
 
 transform = transforms.Compose([
@@ -38,8 +38,8 @@ for show_from in [100, 2000, 5000, 8000]:
 
 
 print("Showing second augmented images")
-for show_from in [100, 2000, 5000, 8000]:
-# for show_from in [200, 11000, 21000, 31000, 35100, 39100]:
+# for show_from in [100, 2000, 5000, 8000]:
+for show_from in [200, 11000, 21000, 31000, 35100, 39100]:
     for base in range(show_from, show_from + n_groups_to_show * 9, 9):
         plt.clf()
         for row in range(3):

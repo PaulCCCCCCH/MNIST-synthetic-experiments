@@ -247,7 +247,14 @@ class BiasedMNIST(MNIST):
 
                 elif self.args.augment_mode == 'other_colors':
                     bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
-                    colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+                    # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+                    colour_map = torch.randint(0, 225, size=(10, 1, 1, 3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
+                    bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
+                elif self.args.augment_mode == 'random_pure':
+                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+                    # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+                    colour_map = torch.randint(0, 225, size=(bg_data.shape[0], 10, 1, 1, 3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
                     bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
 
                 elif self.args.augment_mode == 'strips':
