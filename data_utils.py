@@ -84,6 +84,7 @@ class BiasedMNIST(MNIST):
     OTHER_COLOUR_MAP = [[165, 0, 0], [0, 165, 0], [0, 0, 165], [135, 135, 0], [135, 0, 135],
                         [0, 165, 165], [165, 105, 0], [165, 0, 105], [105, 0, 165], [105, 105, 105]]
     OTHER_COLOUR_MAP.reverse()
+    MIXTURE_METHODS = ['noise', 'noise_weak', 'noise_minor', 'random_pure', 'strips']
 
     def __init__(self, root, args, train=True, transform=None, target_transform=None,
                  download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True):
@@ -128,6 +129,70 @@ class BiasedMNIST(MNIST):
         self.held_out_data = self.held_out_data[indices].numpy()
         self.held_out_targets = self.held_out_targets[indices]
         self.biased_targets = self.held_out_biased_targets[indices]
+
+    def generate_background(self, bg_data, mode, n=10):
+        """
+        Args:
+            bg_data: original background data shaped (N, 28, 28, 3)
+            mode: choose from ARGS.augment_choices
+            n: number of background images to generate
+        Returns:
+            augmented backgrounds of shape (N, n, 28, 28, 3)
+        """
+        if mode == 'noise':
+            bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
+            size = list(bg_data.shape)
+            size[1] = n
+            bg_data = (256 * (torch.rand(size=size) - 0.5) + 128) * bg_data
+            bg_data = bg_data.to(torch.uint8)
+
+        elif mode == 'noise_weak':
+            bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
+            size = list(bg_data.shape)
+            size[1] = n
+            bg_data = (64 * (torch.rand(size=size) - 0.5) + 128) * bg_data
+            bg_data = bg_data.to(torch.uint8)
+
+        elif mode == 'noise_minor':
+            bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
+            size = list(bg_data.shape)
+            size[1] = n
+            bg_data = (20 * (torch.rand(size=size) - 0.5) + 128) * bg_data
+            bg_data = bg_data.to(torch.uint8)
+
+        ##  No longer supported
+        # elif mode == 'other_colors':
+        #     bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+        #     # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+        #     colour_map = torch.randint(0, 225, size=(
+        #     10, 1, 1, 3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
+        #     bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
+        elif mode == 'random_pure':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.randint(0, 225, size=(bg_data.shape[0], n, 1, 1,
+                                                     3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
+        elif mode == 'strips':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.randint(0, 225, size=(bg_data.shape[0], n, 1, 1,
+                                         3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
+
+            strips = torch.zeros_like(bg_data)  # (N, 1, 28, 28, 3)
+            indices = np.arange(bg_data.shape[2])
+            indices = np.where(indices % 5 < 2)
+            strips[:, :, indices, :, :] = 1
+            bg_data = strips * bg_data  # element-wise product, shape unchanged
+            bg_data = bg_data * colour_map
+            bg_data = bg_data.to(torch.uint8)
+
+        else:
+            raise NotImplementedError
+
+        return bg_data
 
     @property
     def raw_folder(self):
@@ -185,7 +250,8 @@ class BiasedMNIST(MNIST):
                     If colour is None, then fill the background with a random
                     colour from the colour pool instead.
         Returns:
-            RGB image of shape (N, 28, 28, 3)
+            RGB image of shape (N, 28, 28, 3), or augmented images of shape (N, n, 28, 28, 3),
+            where n is the number of images after augmentation (usually 10)
         """
 
         fg_data = torch.zeros_like(data)
@@ -224,56 +290,25 @@ class BiasedMNIST(MNIST):
         else:
             # Dealing with biased labels
             if colour:
-                if self.args.augment_mode == 'noise':
-                    bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
-                    size = list(bg_data.shape)
-                    size[1] = 10
-                    bg_data = (256 * (torch.rand(size=size) - 0.5) + 128) * bg_data
-                    bg_data = bg_data.to(torch.uint8)
+                if self.args.augment_mode == 'mixture':
+                    new_bg_data = []
+                    for i in range(10):
+                        mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
+                        bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)
+                        new_bg_data.append(bg_data)
+                    #
+                    bg_data = torch.stack(new_bg_data, dim=1)  # (N, 10, 1, 28, 28, 3)
+                    bg_data = bg_data.squeeze(2)
 
-                elif self.args.augment_mode == 'noise_weak':
-                    bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
-                    size = list(bg_data.shape)
-                    size[1] = 10
-                    bg_data = (64 * (torch.rand(size=size) - 0.5) + 128) * bg_data
-                    bg_data = bg_data.to(torch.uint8)
-
-                elif self.args.augment_mode == 'noise_minor':
-                    bg_data = bg_data.unsqueeze(1).to(dtype=torch.float32)  # (N, 1, 28, 28, 3)
-                    size = list(bg_data.shape)
-                    size[1] = 10
-                    bg_data = (20 * (torch.rand(size=size) - 0.5) + 128) * bg_data
-                    bg_data = bg_data.to(torch.uint8)
-
-                elif self.args.augment_mode == 'other_colors':
-                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
-                    # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
-                    colour_map = torch.randint(0, 225, size=(10, 1, 1, 3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
-                    bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
-
-                elif self.args.augment_mode == 'random_pure':
-                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
-                    # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
-                    colour_map = torch.randint(0, 225, size=(bg_data.shape[0], 10, 1, 1, 3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
-                    bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
-
-                elif self.args.augment_mode == 'strips':
-                    bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
-                    colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
-
-                    strips = torch.zeros_like(bg_data)  # (N, 1, 28, 28, 3)
-                    indices = np.arange(bg_data.shape[2])
-                    indices = np.where(indices % 5 < 2)
-                    strips[:, :, indices, :, :] = 1
-                    bg_data = strips * bg_data  # element-wise product, shape unchanged
-                    bg_data = bg_data * colour_map
-                    bg_data = bg_data.to(torch.uint8)
-
-                else:
+                elif self.args.augment_mode == 'basic':
                     # Generate one image for each background color
                     bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
                     colour_map = torch.tensor(self.COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
                     bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+                elif self.args.augment_mode in self.args.augment_choices:
+                    bg_data = self.generate_background(bg_data, self.args.augment_mode, 10)
+                else:
+                    raise NotImplementedError
 
             # Dealing with unbiased labels
             else:
