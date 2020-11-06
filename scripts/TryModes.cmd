@@ -1,10 +1,11 @@
 @echo off
 
 :: for %%s in (noise_weak, noise_minor, strips) do (
-for %%s in (random_pure) do (
-:: for %%s in (noise, noise_weak, noise_minor, strips, other_colors) do (
+:: for %%s in (noise, noise_weak, noise_minor, strips, other_colors, mixture) do (
+
+for %%s in (mixture) do (
 :: echo Generating %%s dataset
-python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode partial --augment_mode %%s
+:: python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode partial --augment_mode %%s
 
     python train_paired.py colored_biased ^
     --data_path adversarial\\colored\\colored_partial.pkl ^
@@ -15,6 +16,9 @@ python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name co
     --epoch 100 ^
     --patience 5
 
-    echo "Evaluate the de-biased model"
+    echo "Evaluate the de-biased model on pure-color test images"
     python eval.py partial_aug_%%s_onto_partial_biased --data_path adversarial\\colored\\colored_partial.pkl --is_rgb_data
+
+    echo "Evaluate the de-biased model on diverse test images"
+    python eval.py partial_aug_%%s_onto_partial_biased --data_path adversarial\\colored\\colored_partial_diverse_test.pkl --is_rgb_data
 )

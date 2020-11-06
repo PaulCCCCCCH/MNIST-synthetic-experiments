@@ -84,7 +84,8 @@ class BiasedMNIST(MNIST):
     OTHER_COLOUR_MAP = [[165, 0, 0], [0, 165, 0], [0, 0, 165], [135, 135, 0], [135, 0, 135],
                         [0, 165, 165], [165, 105, 0], [165, 0, 105], [105, 0, 165], [105, 105, 105]]
     OTHER_COLOUR_MAP.reverse()
-    MIXTURE_METHODS = ['noise', 'noise_weak', 'noise_minor', 'random_pure', 'strips']
+    # MIXTURE_METHODS = ['noise', 'noise_weak', 'noise_minor', 'random_pure', 'strips']
+    MIXTURE_METHODS = ['noise', 'random_pure', 'strips']
 
     def __init__(self, root, args, train=True, transform=None, target_transform=None,
                  download=False, data_label_correlation=1.0, n_confusing_labels=9, do_shuffle=True):
@@ -244,6 +245,7 @@ class BiasedMNIST(MNIST):
 
     def _binary_to_colour(self, data, colour, augment=False):
         """
+        TODO: Logic seems to be convoluted and outdated. Needs refactoring.
         Args:
             data: a batch of grey-scale images of shape (N, 28, 28)
             colour: a colour to be used to fill the background for each image.
@@ -274,11 +276,19 @@ class BiasedMNIST(MNIST):
 
             # Dealing with unbiased label
             else:
-                # Use random color for each sample
-                color_indices = np.random.randint(10, size=data.shape[0])
-                colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
-                colors = colors.unsqueeze(1).unsqueeze(2)
-                bg_data = bg_data * colors
+                if self.args.test_mode == 'mixture':  # Use a test set with more diverse background
+                    mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
+                    bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)  # (N, 1, 28, 28, 3)
+                    bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+                elif self.args.test_mode in ['strips', 'noise', 'random_pure']:
+                    bg_data = self.generate_background(bg_data, self.args.test_mode, n=1)  # (N, 1, 28, 28, 3)
+                    bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+
+                elif self.args.test_mode == 'pure':  # Choose a color from the pool for each sample
+                    color_indices = np.random.randint(10, size=data.shape[0])
+                    colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
+                    colors = colors.unsqueeze(1).unsqueeze(2)
+                    bg_data = bg_data * colors  # (N, 28, 28, 3)
 
             bg_data = bg_data.permute(0, 3, 1, 2)
 
@@ -291,13 +301,14 @@ class BiasedMNIST(MNIST):
             # Dealing with biased labels
             if colour:
                 if self.args.augment_mode == 'mixture':
-                    new_bg_data = []
+                    all_new_bg_data = []
                     for i in range(10):
                         mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
-                        bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)
-                        new_bg_data.append(bg_data)
-                    #
-                    bg_data = torch.stack(new_bg_data, dim=1)  # (N, 10, 1, 28, 28, 3)
+                        # mode_idx = 0
+                        new_bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)
+                        all_new_bg_data.append(new_bg_data)
+
+                    bg_data = torch.stack(all_new_bg_data, dim=1)  # (N, 10, 1, 28, 28, 3)
                     bg_data = bg_data.squeeze(2)
 
                 elif self.args.augment_mode == 'basic':
@@ -362,7 +373,7 @@ class BiasedMNIST(MNIST):
             targets: labels of shape (N) corresponding to data
             biased_targets: index of background color to be used, shaped (N)
         """
-        if (self.args.augment_mode == 'clipped') or self.args.clipped and not held_out:
+        if (self.args.augment_mode == 'clipped' or self.args.clipped) and not held_out:
             all_labels = range(5, 10)
         else:
             all_labels = range(self.targets.max().item() + 1)

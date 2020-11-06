@@ -33,6 +33,10 @@ parser.add_argument('--clipped', help='Clip dataset to contain only biased digit
 
 augment_choices = ['none', 'basic', 'clipped', 'noise', 'noise_weak', 'noise_minor',  'random_pure', 'strips', 'mixture']
 parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=augment_choices, default='none')
+# parser.add_argument('--diverse_test', help='Should we use more diverse test set instead of just pure colors?', action='store_true')
+
+test_choices = ['pure', 'random_pure', 'noise', 'strips', 'mixture']
+parser.add_argument('--test_mode', help='How should we fill the background of the generated test set?', choices=test_choices, default='pure')
 # parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
 
 # For paired training only
@@ -103,6 +107,8 @@ class ARGS:
     augment_mode =          args.augment_mode
     augment_choices =       augment_choices
     clipped =               args.clipped
+    # diverse_test =          args.diverse_test
+    test_mode =             args.test_mode
 
     # For evaluation
     test_only_data_path =   args.test_only_data_path
