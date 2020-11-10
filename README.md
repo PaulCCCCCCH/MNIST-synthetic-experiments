@@ -87,10 +87,10 @@ Originally, we made the other half unbiased. This was to test whether we need to
 ### Experiments
 
 - (Tier 3) Alter the percentage of the augmented samples to see the effect of having more augmented samples. This gives a suggestion for people using the system on how much samples they need to mark by hand. However, this may not be necessary, as we pick the most biased ones and mark them first in the real system (by using influence function)
-- (Tier 1) Backgrounds of the test set and the augmented dataset can be strips, noise, pure color or a mixture of everything. We have in total 4 * 4 = 16 settings to experiment with. This is to answer the following questions:
-  - Does a mixture of everything makes the test set harder than noise alone? I expect the answer to be yes, since pure colors cannot really be regarded as just special cases of noises, as previous experiments have shown.
-- (Tier 1) 
-
+- ~~(Tier 1) Backgrounds of the test set and the augmented dataset can be strips, noise, pure color or a mixture of everything. We have in total 4 * 4 = 16 settings to experiment with. This is to answer the following questions:~~
+  ~~Does a mixture of everything makes the test set harder than noise alone? I expect the answer to be yes, since pure colors cannot really be regarded as just special cases of noises, as previous experiments have shown.~~
+- ~~(Tier 1) Try a test set with background in only 1 color, and look at the performance.~~
+- (Tier 1) Retrain base model, with the right unbiased digit setting. If that does not work, then there may be problems with the code.
 
 
 ### Summary

@@ -190,6 +190,15 @@ class BiasedMNIST(MNIST):
             bg_data = bg_data * colour_map
             bg_data = bg_data.to(torch.uint8)
 
+        elif mode == 'pure_black':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+
+            ## inefficient but saved coding time
+            colour_map = torch.randint(225, 226, size=(bg_data.shape[0], n, 1, 1,
+                                                     3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
         else:
             raise NotImplementedError
 
@@ -243,7 +252,7 @@ class BiasedMNIST(MNIST):
         """
         ##########################
 
-    def _binary_to_colour(self, data, colour, augment=False):
+    def _binary_to_colour(self, data, colour, augment=False, held_out=False):
         """
         TODO: Logic seems to be convoluted and outdated. Needs refactoring.
         Args:
@@ -276,19 +285,24 @@ class BiasedMNIST(MNIST):
 
             # Dealing with unbiased label
             else:
-                if self.args.test_mode == 'mixture':  # Use a test set with more diverse background
-                    mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
-                    bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)  # (N, 1, 28, 28, 3)
-                    bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
-                elif self.args.test_mode in ['strips', 'noise', 'random_pure']:
-                    bg_data = self.generate_background(bg_data, self.args.test_mode, n=1)  # (N, 1, 28, 28, 3)
+                if held_out:
+                    if self.args.test_mode == 'mixture':  # Use a test set with more diverse background
+                        mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
+                        bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)  # (N, 1, 28, 28, 3)
+                        bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+                    elif self.args.test_mode in ['strips', 'noise', 'random_pure']:
+                        bg_data = self.generate_background(bg_data, self.args.test_mode, n=1)  # (N, 1, 28, 28, 3)
+                        bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+
+                    elif self.args.test_mode == 'pure':  # Choose a color from the pool for each sample
+                        color_indices = np.random.randint(10, size=data.shape[0])
+                        colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
+                        colors = colors.unsqueeze(1).unsqueeze(2)
+                        bg_data = bg_data * colors  # (N, 28, 28, 3)
+                else:
+                    bg_data = self.generate_background(bg_data, 'random_pure', n=1)  # (N, 1, 28, 28, 3)
                     bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
 
-                elif self.args.test_mode == 'pure':  # Choose a color from the pool for each sample
-                    color_indices = np.random.randint(10, size=data.shape[0])
-                    colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
-                    colors = colors.unsqueeze(1).unsqueeze(2)
-                    bg_data = bg_data * colors  # (N, 28, 28, 3)
 
             bg_data = bg_data.permute(0, 3, 1, 2)
 

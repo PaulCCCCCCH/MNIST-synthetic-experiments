@@ -6,7 +6,7 @@ from torchvision import transforms
 from PIL import Image
 
 
-with open(os.path.join('adversarial',  'colored', 'colored_partial_test_strips.pkl'), 'rb') as f:
+with open(os.path.join('adversarial',  'colored', 'colored_partial.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
 
 transform = transforms.Compose([
@@ -26,7 +26,7 @@ for show_from in [100, 200, 300, 2000, 5000, 8000]:
         for row in range(3):
             for col in range(3):
                 plt.subplot(3, 3, row*3+col + 1)
-                img = s[2][0][row*3+col+base]
+                img = s[0][0][row*3+col+base]
                 img = transform(img)
                 img = np.swapaxes(img, 0, 1)
                 img = np.swapaxes(img, 1, 2)
