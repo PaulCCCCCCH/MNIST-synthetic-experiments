@@ -1,11 +1,11 @@
 @echo off
 
-:: for %%s in (noise_weak, noise_minor, strips) do (
 :: for %%s in (noise, noise_weak, noise_minor, strips, other_colors, mixture) do (
-
-for %%s in (mixture) do (
-:: echo Generating %%s dataset
-:: python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode partial --augment_mode %%s
+:: for %%s in (noise, strips, mixture, random_pure) do (
+for %%s in (mixture, random_pure) do (
+::for %%s in (mixture) do (
+    echo Generating %%s dataset
+    python generate_adversarial.py temp --data_path data\\mnist.pkl --attack_name colored --bias_mode partial --augment_mode %%s
 
     python train_paired.py colored_biased ^
     --data_path adversarial\\colored\\colored_partial.pkl ^

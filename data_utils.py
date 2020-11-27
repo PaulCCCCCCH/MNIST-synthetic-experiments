@@ -278,13 +278,15 @@ class BiasedMNIST(MNIST):
         # bg_data: (N, 28, 28, 3)
 
         if not augment:
-            # Dealing with biased label
+            # Producing biased backgrounds:
+            # Dealing with biased labels, i.e. assigning the `colour` to all images for the given digit
             if colour:
                 # Use the same color as backgrounds for all the images
                 bg_data = bg_data * torch.ByteTensor(colour)
 
-            # Dealing with unbiased label
+            # Dealing with unbiased label, i.e. makes the background of these digits diverse
             else:
+                # Dealing with the test set, use diverse backgrounds
                 if held_out:
                     if self.args.test_mode == 'mixture':  # Use a test set with more diverse background
                         mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
@@ -299,6 +301,8 @@ class BiasedMNIST(MNIST):
                         colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
                         colors = colors.unsqueeze(1).unsqueeze(2)
                         bg_data = bg_data * colors  # (N, 28, 28, 3)
+
+                # Dealing with the unbiased training samples: i.e. assigning a random color to the background
                 else:
                     bg_data = self.generate_background(bg_data, 'random_pure', n=1)  # (N, 1, 28, 28, 3)
                     bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
@@ -312,7 +316,7 @@ class BiasedMNIST(MNIST):
             # data: (N, 28, 28, 3)
 
         else:
-            # Dealing with biased labels
+            # Augment the samples that need to be debiased.
             if colour:
                 if self.args.augment_mode == 'mixture':
                     all_new_bg_data = []
@@ -335,7 +339,7 @@ class BiasedMNIST(MNIST):
                 else:
                     raise NotImplementedError
 
-            # Dealing with unbiased labels
+            # Copying samples that do not need to be debiased.
             else:
                 # Use one random background color and repeat 10 times
                 color_indices = np.random.randint(10, size=data.shape[0])
@@ -365,7 +369,7 @@ class BiasedMNIST(MNIST):
         data = self.held_out_data[indices] if held_out else self.data[indices]
         targets = self.held_out_targets[indices] if held_out else self.targets[indices]
         augment = not held_out and self.args.augment_mode != 'none'
-        return self._binary_to_colour(data, self.COLOUR_MAP[label], augment=augment), targets
+        return self._binary_to_colour(data, self.COLOUR_MAP[label], augment=augment, held_out=held_out), targets
 
     def _make_unbiased_mnist(self, indices, label, held_out=False):
         """
@@ -378,7 +382,7 @@ class BiasedMNIST(MNIST):
         data = self.held_out_data[indices] if held_out else self.data[indices]
         targets = self.held_out_targets[indices] if held_out else self.targets[indices]
         augment = not held_out and self.args.augment_mode != 'none'
-        return self._binary_to_colour(data, None, augment=augment), targets
+        return self._binary_to_colour(data, None, augment=augment, held_out=held_out), targets
 
     def build_mnist(self, held_out=False):
         """

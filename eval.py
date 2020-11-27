@@ -3,7 +3,11 @@ import torch
 from args import *
 from data_utils import get_mnist_dataset, get_mnist_dataset_test_only
 import logging
-from utils import set_logger
+from utils import set_logger, plot_confusion_matrix
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 set_logger(ARGS)
 
@@ -29,9 +33,12 @@ logging.info("Loading previous model with name: '{}'".format(ARGS.model_name))
 lenet.load_state_dict(state_dict)
 lenet.eval()
 
-# Testing
 correct = 0
 total = 0
+
+all_predictions = []
+all_labels = []
+
 with torch.no_grad():
     for inputs_batch, labels_batch in test:
         inputs = inputs_batch.to(device)
@@ -46,5 +53,16 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
+        all_predictions.extend(predicted.cpu().numpy())
+        all_labels.extend(labels.cpu().numpy())
+
+
+cm = confusion_matrix(all_labels, all_predictions)
+
 logging.info('Correct predictions: {} of {}'.format(correct, total))
 logging.info('Accuracy of the network on 10000 test images: {}'.format(correct / total))
+
+logging.info('Showing confusion matrix: \n ' + str(cm))
+plot_confusion_matrix(cm, [str(x) for x in range(10)], 'Confusion Matrix for model {}'.format(ARGS.model_name))
+plt.savefig(os.path.join(ARGS.save_dir, 'confusion_matrix.png'), format='png')
+

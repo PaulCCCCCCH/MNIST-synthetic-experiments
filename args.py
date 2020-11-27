@@ -23,8 +23,8 @@ parser.add_argument('--is_rgb_data', help='Is the data file in RGB format?', act
 
 # For adversarial examples generation only
 parser.add_argument('--adversarial_dir', type=str, help='Place to store adversarial examples', default='adversarial')
-parser.add_argument('--attack_name', type=str, help='The attack to be performed', default='fgsm',
-                    choices=['fgsm', 'cw', 'colored'])
+parser.add_argument('--attack_name', type=str, help='The attack to be performed', default='none',
+                    choices=['none', 'fgsm', 'cw', 'colored'])
 parser.add_argument('--test_data_only', help='Generate adv samples only for test set', action='store_true')
 # For colored examples only
 parser.add_argument('--bias_mode', help='How many of the labels will have bias?', choices=['none', 'partial', 'all'], default='none')

@@ -146,7 +146,12 @@ if __name__ == '__main__':
     # with the attack methods.
     elif ARGS.attack_name == 'colored':
         adversarial_dir = ARGS.adversarial_dir
-        filename = 'colored_{}{}'.format(ARGS.bias_mode, '' if ARGS.augment_mode == 'none' else '_aug_{}'.format(ARGS.augment_mode))
+        if ARGS.augment_mode == 'none':
+            filename = 'colored_{}{}'.format(ARGS.bias_mode, '_test_{}'.format(ARGS.test_mode))
+
+        else:
+            filename = 'colored_{}{}'.format(ARGS.bias_mode, '_aug_{}'.format(ARGS.augment_mode))
+
         if ARGS.clipped:
             filename += "_clipped"
         filename += '.pkl'
