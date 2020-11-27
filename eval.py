@@ -64,5 +64,11 @@ logging.info('Accuracy of the network on 10000 test images: {}'.format(correct /
 
 logging.info('Showing confusion matrix: \n ' + str(cm))
 plot_confusion_matrix(cm, [str(x) for x in range(10)], 'Confusion Matrix for model {}'.format(ARGS.model_name))
-plt.savefig(os.path.join(ARGS.save_dir, 'confusion_matrix.png'), format='png')
+test_method = ''
+try:
+    test_method = os.path.split(ARGS.data_path)[1].split('.')[0].split('_test_')[1]
+except IndexError:
+    pass
+
+plt.savefig(os.path.join(ARGS.save_dir, 'confusion_matrix_test_{}.png'.format(test_method)), format='png')
 

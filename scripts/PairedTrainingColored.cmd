@@ -5,4 +5,5 @@ python train_paired.py colored_biased ^
 --paired_data_path adversarial\\colored\\colored_partial_aug.pkl ^
 --new_model_name partial_aug_onto_partial_biased ^
 --augment_data_mode pick_random ^
+--use_reg_model ^
 --epoch 100

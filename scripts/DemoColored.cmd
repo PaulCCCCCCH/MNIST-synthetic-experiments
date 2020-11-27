@@ -36,6 +36,7 @@ python train_paired.py colored_biased ^
 --paired_data_path adversarial\\colored\\colored_partial_aug_basic.pkl ^
 --new_model_name partial_aug_onto_partial_biased ^
 --augment_data_mode pick_random ^
+--use_reg_model ^
 --epoch 100
 
 echo "Evaluate the de-biased model"
@@ -47,6 +48,7 @@ python train_paired.py colored_biased ^
 --paired_data_path adversarial\\colored\\colored_partial_aug_noise.pkl ^
 --new_model_name partial_aug_noise_onto_partial_biased ^
 --augment_data_mode pick_random ^
+--use_reg_model ^
 --epoch 100
 
 echo "Evaluate the de-biased model"
@@ -59,6 +61,7 @@ python train_paired.py colored_biased ^
 --paired_data_path adversarial\\colored\\colored_partial_aug_clipped.pkl ^
 --new_model_name clipped_aug_onto_partial_biased ^
 --augment_data_mode pick_random ^
+--use_reg_model ^
 --epoch 100
 
 echo "Evaluate the de-biased model"

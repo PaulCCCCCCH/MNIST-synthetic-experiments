@@ -33,8 +33,59 @@ Therefore, whether catastrophic forgetting is caused by biased signals depends o
 Interestingly, how tasks are semantically related is determined by human. If it is easier for human to transfer from task A to task A' than from task A to task B, then we may say that task A and A' are more semantically similar than task A and B.
 
 
+## Experiment Results with Initial Setup
+Pseudo code for dataset modification in the initial setup
+```python
+color_pool = [color0, color1, ..., color9]
+```
 
-## What To Do?
+```python
+# Modify the training (and validation) set
+for img, label in training_set:
+
+  if label in [5, 6, 7, 8, 9]: # If sample is a biased digit
+
+    # Fill the background with a designated color
+    # This creates a color-digit correlation (bias)
+    img.fill_background_with_color(color_pool[label])
+
+  else: # If sample is an unbiased digit
+
+    # Fill the background with a random color
+    # from the color pool.
+    n = random_int(0, 9) # Pick a random integer from 0 to 9
+    img.fill_backgroud_with_color(color_pool[n])
+
+# Modify the test set
+for img, label in test_set:
+
+    # Same as unbiased training samples, we 
+    # pick a random color for test set.
+    n = random_int(0, 9) 
+    img.fill_backgroud_with_color(color_pool[n])
+
+```
+We train a biased model in the modified training set, and test on the modified test set. As expected, the confusion matrix looks like:
+
+![confusion matrix](imgs/cm_initial_setup.png)
+
+The digit-color correlation for digits 5 - 9 makes the model unable to digits 5 - 9 correctly.
+
+We further pair-train it with `basic` augmentation (i.e. pair each image for a biased digit with a copy of itself, and the background of the copy will be filled with a random color **chosen from the pool**). **Note that we only augment images for biased digits. For an unbiased sample, we simply pair it with an exact copy of itself without changing anything.** This eliminates the bias completely, resulting in about 0.98 accuracy.
+
+Interestingly, if we pair train it with `noise` augmentation (i.e. fill the backgrounds of paired images with random rgb values, or noise), we won't be able to optimize the performance (accuracy is about 0.85). The confusion matrix looks like this:
+
+![confusion matrix](imgs/cm_initial_setup_noise.png)
+
+This also happens when we pair train with `strip` augmentation (i.e. fill the backgrounds with randomly-colored strips).
+
+
+
+
+### Why does this happen?
+
+
+## What Do We Want To Achieve?
 
 ### Final Goal
 
@@ -90,8 +141,8 @@ Originally, we made the other half unbiased. This was to test whether we need to
 - ~~(Tier 1) Backgrounds of the test set and the augmented dataset can be strips, noise, pure color or a mixture of everything. We have in total 4 * 4 = 16 settings to experiment with. This is to answer the following questions:~~
   ~~Does a mixture of everything makes the test set harder than noise alone? I expect the answer to be yes, since pure colors cannot really be regarded as just special cases of noises, as previous experiments have shown.~~
 - ~~(Tier 1) Try a test set with background in only 1 color, and look at the performance.~~
-- (Tier 2) Retrain base model, with the right unbiased digit setting. If that does not work, then there may be problems with the code.
-- (Tier 1) See accuracy for each color 
+- ~~(Tier 2) Retrain base model, with the right unbiased digit setting. If that does not work, then there may be problems with the code.~~
+- ~~(Tier 1) See accuracy for each color~~
 
 ### Summary
 

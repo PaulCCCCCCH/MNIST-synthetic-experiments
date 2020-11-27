@@ -28,6 +28,9 @@ parser.add_argument('--attack_name', type=str, help='The attack to be performed'
 parser.add_argument('--test_data_only', help='Generate adv samples only for test set', action='store_true')
 # For colored examples only
 parser.add_argument('--bias_mode', help='How many of the labels will have bias?', choices=['none', 'partial', 'all'], default='none')
+
+unbiased_data_mode_choices = ['pure', 'random_pure', 'mixture']
+parser.add_argument('--unbiased_data_mode', help='How do we make the unbiased samples?', default='pure')
 parser.add_argument('--ordered', help='Order biased samples by digits', action='store_true')
 parser.add_argument('--clipped', help='Clip dataset to contain only biased digits', action='store_true')
 
@@ -103,6 +106,8 @@ class ARGS:
     adversarial_dir =       os.path.join(args.adversarial_dir, attack_name)
     test_data_only =        args.test_data_only
     bias_mode =             args.bias_mode
+    unbiased_data_mode =         args.unbiased_data_mode
+    unbiased_data_mode_choices = unbiased_data_mode_choices
     ordered =               args.ordered
     augment_mode =          args.augment_mode
     augment_choices =       augment_choices

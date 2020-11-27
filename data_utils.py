@@ -304,8 +304,17 @@ class BiasedMNIST(MNIST):
 
                 # Dealing with the unbiased training samples: i.e. assigning a random color to the background
                 else:
-                    bg_data = self.generate_background(bg_data, 'random_pure', n=1)  # (N, 1, 28, 28, 3)
-                    bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+
+                    if self.args.unbiased_data_mode == 'pure':
+                        color_indices = np.random.randint(10, size=data.shape[0])
+                        colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
+                        colors = colors.unsqueeze(1).unsqueeze(2)
+                        bg_data = bg_data * colors  # (N, 28, 28, 3)
+                    elif self.args.unbiased_data_mode in self.args.unbiased_data_mode_choices:
+                        bg_data = self.generate_background(bg_data, 'random_pure', n=1)  # (N, 1, 28, 28, 3)
+                        bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+                    else:
+                        raise NotImplementedError
 
 
             bg_data = bg_data.permute(0, 3, 1, 2)
@@ -410,16 +419,11 @@ class BiasedMNIST(MNIST):
             else:
                 _data, _targets = self._make_biased_mnist(indices, bias_label, held_out)
 
-            print(_data.shape)
-            print(_data.dtype)
-
             #############################################
             # TODO: Why is this step taking 10 times larger space than when test on jupyter notebook?
             # They have exactly the same size and dtype in both settings.
             #############################################
             data = torch.cat([data, _data])
-            print(data.shape)
-            print(data.dtype)
             targets = torch.cat([targets, _targets])
             biased_targets.extend([bias_label] * len(indices))
 
