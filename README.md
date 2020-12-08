@@ -79,6 +79,7 @@ Interestingly, if we pair train it with `noise` augmentation (i.e. fill the back
 
 This also happens when we pair train with `strip` augmentation (i.e. fill the backgrounds with randomly-colored strips).
 
+Why are `basic` augmentation better than `noise` and `strip` augmentations? One might say that `basic` augmentation resembles the test set most, since they both have pure-colored backgrounds from the same color pool. However, if we pair train using `basic` augmentation on a new test set with noise background, we will find out that it still reaches the best performance. This means that with proper augmentation, a model can learn to ignore any background, not just the once that are similar to the samples that it has seen before.
 
 
 
@@ -144,7 +145,7 @@ Originally, we made the other half unbiased. This was to test whether we need to
 - ~~(Tier 2) Retrain base model, with the right unbiased digit setting. If that does not work, then there may be problems with the code.~~
 - ~~(Tier 1) See accuracy for each color~~
 
-### Summary
+### Summar
 
 
 

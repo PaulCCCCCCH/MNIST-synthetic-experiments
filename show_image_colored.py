@@ -6,13 +6,14 @@ from torchvision import transforms
 from PIL import Image
 
 
-with open(os.path.join('adversarial',  'colored', 'colored_partial_test_noise.pkl'), 'rb') as f:
+with open(os.path.join('adversarial',  'colored', 'colored_partial_test_pure123.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
 
 transform = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean=(0.5, 0.5, 0.5),
-                         std=(0.5, 0.5, 0.5))])
+    #transforms.Normalize(mean=(0.5, 0.5, 0.5),
+    #                     std=(0.5, 0.5, 0.5))
+    ])
 
 # imgs = [s[2][0][i].reshape(28, 28) for i in range(9)]
 n_groups_to_show = 1

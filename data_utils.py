@@ -78,8 +78,11 @@ class BiasedMNIST(MNIST):
     # COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
     #               [0, 255, 255], [255, 128, 0], [255, 0, 128], [128, 0, 255], [128, 128, 128]]
 
+    # COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
+    #               [0, 255, 255], [255, 195, 0], [255, 0, 195], [195, 0, 255], [195, 195, 195]]
+
     COLOUR_MAP = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [225, 225, 0], [225, 0, 225],
-                  [0, 255, 255], [255, 195, 0], [255, 0, 195], [195, 0, 255], [195, 195, 195]]
+                  [0, 255, 255], [255, 0, 195], [195, 0, 255], [195, 195, 195], [255, 195, 0]]
 
     OTHER_COLOUR_MAP = [[165, 0, 0], [0, 165, 0], [0, 0, 165], [135, 135, 0], [135, 0, 135],
                         [0, 165, 165], [165, 105, 0], [165, 0, 105], [105, 0, 165], [105, 105, 105]]
@@ -193,11 +196,89 @@ class BiasedMNIST(MNIST):
         elif mode == 'pure_black':
             bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
             # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
-
-            ## inefficient but saved coding time
-            colour_map = torch.randint(225, 226, size=(bg_data.shape[0], n, 1, 1,
-                                                     3))  # (Do not use 0 to 255 because white background makes the digit indistinguishable
+            colour_map = torch.tensor([0, 0, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
             bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure1':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([225, 0, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure2':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([0, 225, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure3':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([0, 0, 225]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure12':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([225, 225, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure13':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([225, 0, 225]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure23':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([0, 225, 225]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure123':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([225, 225, 225]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_special':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([0, 168, 225]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_1':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([128, 0, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_2':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([0, 128, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_3':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([0, 0, 128]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_12':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([128, 128, 0]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_13':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([128, 0, 128]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_23':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([128, 0, 128]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_half_123':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([128, 128, 128]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+        elif mode == 'pure_single':
+            bg_data = bg_data.unsqueeze(1)  # (N, 1, 28, 28, 3)
+            # colour_map = torch.tensor(self.OTHER_COLOUR_MAP).unsqueeze(1).unsqueeze(2)  # (10, 1, 1, 3)
+            colour_map = torch.tensor([128, 128, 128]).repeat(bg_data.shape[0], n, 1, 1, 1)
+            bg_data = bg_data * colour_map  # (N, 10, 28, 28, 3)
+
 
         else:
             raise NotImplementedError
@@ -292,15 +373,17 @@ class BiasedMNIST(MNIST):
                         mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
                         bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)  # (N, 1, 28, 28, 3)
                         bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
-                    elif self.args.test_mode in ['strips', 'noise', 'random_pure']:
+                    elif self.args.test_mode in self.args.test_mode_choices:
                         bg_data = self.generate_background(bg_data, self.args.test_mode, n=1)  # (N, 1, 28, 28, 3)
                         bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
 
-                    elif self.args.test_mode == 'pure':  # Choose a color from the pool for each sample
-                        color_indices = np.random.randint(10, size=data.shape[0])
-                        colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
-                        colors = colors.unsqueeze(1).unsqueeze(2)
-                        bg_data = bg_data * colors  # (N, 28, 28, 3)
+                    # elif self.args.test_mode == 'pure':  # Choose a color from the pool for each sample
+                    #     color_indices = np.random.randint(10, size=data.shape[0])
+                    #     colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
+                    #     colors = colors.unsqueeze(1).unsqueeze(2)
+                    #     bg_data = bg_data * colors  # (N, 28, 28, 3)
+                    else:
+                        raise NotImplementedError
 
                 # Dealing with the unbiased training samples: i.e. assigning a random color to the background
                 else:

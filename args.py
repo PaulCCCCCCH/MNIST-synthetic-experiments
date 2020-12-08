@@ -34,17 +34,17 @@ parser.add_argument('--unbiased_data_mode', help='How do we make the unbiased sa
 parser.add_argument('--ordered', help='Order biased samples by digits', action='store_true')
 parser.add_argument('--clipped', help='Clip dataset to contain only biased digits', action='store_true')
 
-augment_choices = ['none', 'basic', 'clipped', 'noise', 'noise_weak', 'noise_minor',  'random_pure', 'strips', 'mixture']
+augment_choices = ['none', 'basic', 'clipped', 'noise', 'noise_weak', 'noise_minor',  'random_pure', 'strips', 'mixture', 'pure_single']
 parser.add_argument('--augment_mode', help='How to augment data with biased labels', choices=augment_choices, default='none')
 # parser.add_argument('--diverse_test', help='Should we use more diverse test set instead of just pure colors?', action='store_true')
 
-test_choices = ['pure', 'random_pure', 'noise', 'strips', 'mixture', 'pure_black']
-parser.add_argument('--test_mode', help='How should we fill the background of the generated test set?', choices=test_choices, default='pure')
+test_mode_choices = ['pure', 'random_pure', 'noise', 'strips', 'mixture', 'pure_black', 'pure1', 'pure2', 'pure3', 'pure12', 'pure13', 'pure23', 'pure123', 'pure_special', 'pure_half_1', 'pure_half_2', 'pure_half_3', 'pure_half_12', 'pure_half_13',  'pure_half_23', 'pure_half_123']
+parser.add_argument('--test_mode', help='How should we fill the background of the generated test set?', choices=test_mode_choices, default='pure')
 # parser.add_argument('--c_value', type=float, help='C value of the cw attack', default=0.5)
 
 # For paired training only
 parser.add_argument('--paired_data_path', type=str, help='Path to the paired data to be used', default='')
-aug_mode_choices = ['pick_first', 'pick_random', 'a digit']
+aug_mode_choices = ['pick_first', 'pick_random', 'one_digit']
 parser.add_argument('--augment_data_mode', type=str, default='',
                     help='In which way do we use the augment data? Choose from {}'.format(aug_mode_choices))
 parser.add_argument('--is_clipped_data', action='store_true', help='Is the augmented data clipped?')
@@ -114,6 +114,7 @@ class ARGS:
     clipped =               args.clipped
     # diverse_test =          args.diverse_test
     test_mode =             args.test_mode
+    test_mode_choices =     test_mode_choices
 
     # For evaluation
     test_only_data_path =   args.test_only_data_path
