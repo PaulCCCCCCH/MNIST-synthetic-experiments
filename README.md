@@ -4,21 +4,58 @@
 torchvision==0.7.0
 torch==1.6.0
 
+### Setup
+If you only wish te run colored MNIST experiments, you don't need to do anything. The data set will be automatically downloaded for you.
+
+If you wish to run the attack experiments (i.e. fgsm and cw), you will need to download `mnist.pkl` and `mnist.pkl` from [here](https://drive.google.com/file/d/10UOEiCy_cH2-2JMHg70NORIrevw7zxri/view?usp=sharing) and [here](https://drive.google.com/file/d/1Fau2edqzJ1uJfOMGfM3kSHuBAGnuJNfn/view?usp=sharing) and put them both in `data/` folder in the root directory of the project.
+
 ### Usage
-See `./scripts` for demos.
+See `./scripts`, `./scripts_temp` and `./scripts_reprod` for demos. Scripts in `./scripts_repord` are full pipelines which you can run and reproduce all results at once.
 To see a full list of parameters, open `./args.py` or run `python args.py`
 
 - To train a model, use `train.py`
 - To evaluate a model, use `eval.py`
 - To generate attacks or augmented dataset, use `generate_adversarial.py`
 - To use paired training to continue fine-tuning a model, use `paired_train.py`
+- To take a look at the generated images, use `show_image*.py`
 
+### Colored Background Choices
+- `basic` / `pure`: Meaning randomly choosing a color from a pool of 10 colors. Kind of unbiased, but is causing a lot of problems (see results). Pseudo code
+  ```python
+  colors = ['red', 'yellow', 'green', 'dark_blue', ..., 'pink']  # len(colors) == 10
+  for img in images:
+    color = colors[random_int(0, 10)] # randomly pick a color
+    img.background.fill(color) # fill the background with the color
+  ```
+- `random_pure`: Similar to `basic` / `pure`, but instead we pick random RGB values. Pseudo code
+  ```python
+  for img in images:
+    color = RGB(random_int(0,225), random_int(0,225), random_int(0,225)) # Truely pick a random color. We use 225 instead of 255 to avoid white background obfuscating the strokes.
+    img.background.fill(color) # fill the background with the color
+
+  ```
+- `strips`: Fill the background with horizontal strips (two colors created by picking random RGB values).
+- `noise`: Fill the background with random pixels (not pure colors any more).
+- `mixture`: Mix the above augmentation methods to create a diverse data set. Pseudo code:
+  ```python
+  aug_methods = ['basic', 'random_pure', 'strips', 'noise']
+  for img in images:
+    aug_method = aug_methods[random_int(0, 4)] # randomly select an augmentation method
+    img.background = get_background(aug_method) # generate a background with the method and alter the image
+  ```
+- `pure_*`: Use a single color to fill all images. The * part actually means the color we use. For example, `pure_13` means filling all images with `[225, 0, 225]`, `pure_23` means `[0, 225, 225]`, `pure_half_1` means `[128, 0, 0]`, etc.
+
+
+
+
+### Caveats
+To speed up experiments, the augmented data are pre-computed and stored. A full run of the colored experiments pipeline may require `10GB` of your disk space and fully occupies a `16GB` RAM with a little bit of virtual memory.
 
 
 
 # Notes
 
-Ideas, questions, outlines, etc.
+Ideas, questions, outlines, results, etc.
 
 ## Thoughts on Catastrophic Forgetting and Biased Signals:
 

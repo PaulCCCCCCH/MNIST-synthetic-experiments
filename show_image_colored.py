@@ -3,11 +3,17 @@ import pickle
 import os
 import numpy as np
 from torchvision import transforms
-from PIL import Image
 
+myMap = {'train': 0, 'dev': 1, 'test': 2}
 
+##############################################
+### Choose the data set you want to inspect here:
+set_to_see = myMap['train']
+
+### Choose the data file you want to inspect here
 with open(os.path.join('adversarial',  'colored', 'colored_partial_test_pure123.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
+##############################################
 
 transform = transforms.Compose([
     transforms.ToTensor(),
@@ -28,7 +34,7 @@ for show_from in [100, 500]:
         for row in range(n):
             for col in range(n):
                 plt.subplot(n, n, row*n+col + 1)
-                img = s[2][0][row*n+col+base]
+                img = s[set_to_see][0][row*n+col+base]
                 img = transform(img)
                 img = np.swapaxes(img, 0, 1)
                 img = np.swapaxes(img, 1, 2)

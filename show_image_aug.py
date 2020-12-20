@@ -3,13 +3,16 @@ import pickle
 import os
 import numpy as np
 from torchvision import transforms
-from PIL import Image
 
+##########################################################
+### Choose the data file you want to inspect here
 
 # with open(os.path.join('data',  'mnist.pkl'), 'rb') as f:
 # with open(os.path.join('adversarial',  'fgsm', 'fgsm_epsilon_0.2.pkl'), 'rb') as f:
 with open(os.path.join('adversarial',  'colored', 'colored_partial_aug_noise.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
+
+##########################################################
 
 transform = transforms.Compose([
     transforms.ToTensor(),

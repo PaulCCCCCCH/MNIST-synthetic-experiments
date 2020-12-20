@@ -136,7 +136,7 @@ class ARGS:
     saveAsNew =             bool(args.new_model_name)
     isPairedTrain =         script_name.startswith('train_paired')
 
-    assert bool(data_path) ^ bool(test_only_data_path), "Require a data_path or a test_only_data_path argument, but not both"
+    assert attack_name == 'colored' or bool(data_path) or bool(test_only_data_path), "Require a data_path or a test_only_data_path argument, but not both. Unless you are generating colored adversarial dataset"
     assert not isPairedTrain or bool(paired_data_path), "Paired training requires a paired_data_path"
     assert not augment_data_mode or isPairedTrain, "Augment data can only be used in paired training"
     assert not augment_data_mode or augment_data_mode.isdigit() or augment_data_mode in aug_mode_choices, \
