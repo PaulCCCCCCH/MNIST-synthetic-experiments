@@ -11,7 +11,7 @@ myMap = {'train': 0, 'dev': 1, 'test': 2}
 set_to_see = myMap['train']
 
 ### Choose the data file you want to inspect here
-with open(os.path.join('adversarial',  'colored', 'colored_partial_test_pure123.pkl'), 'rb') as f:
+with open(os.path.join('adversarial',  'colored', 'colored_partial_test_pure.pkl'), 'rb') as f:
     s = pickle.load(f, encoding='bytes')
 ##############################################
 

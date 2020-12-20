@@ -11,7 +11,7 @@ for %%t in (
     strips,
     pure,
 ) do (
-    python generate_adversarial.py model_name_placeholder --attack_name colored --bias_mode partial --test_mode %%t --unbiased_data_mode random_pure
+    python generate_adversarial.py model_name_placeholder --attack_name colored --bias_mode partial --test_mode %%t --unbiased_data_mode mixture
 )
 
 :: Train a model named 'colored_biased' on a data set generated previously.

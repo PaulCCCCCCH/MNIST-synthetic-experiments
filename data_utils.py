@@ -369,9 +369,12 @@ class BiasedMNIST(MNIST):
             else:
                 # Dealing with the test set, use diverse backgrounds
                 if held_out:
+
                     if self.args.test_mode == 'mixture':  # Use a test set with more diverse background
-                        mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
-                        bg_data = self.generate_background(bg_data, self.MIXTURE_METHODS[mode_idx], n=1)  # (N, 1, 28, 28, 3)
+                        for i in range(bg_data.shape[0]):
+                            mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
+                            bg_data_one_img = self.generate_background(bg_data[i:i+1], self.MIXTURE_METHODS[mode_idx], n=1)  # (1, 1, 28, 28, 3)
+                            bg_data[i] = bg_data_one_img
                         bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
                     elif self.args.test_mode == 'pure':  # Choose a color from the pool for each sample
                         color_indices = np.random.randint(10, size=data.shape[0])
@@ -387,14 +390,22 @@ class BiasedMNIST(MNIST):
 
                 # Dealing with the unbiased training samples: i.e. assigning a random color to the background
                 else:
+                    if self.args.unbiased_data_mode == 'mixture':  # Use a test set with more diverse background
+                        for i in range(bg_data.shape[0]):
+                            mode_idx = np.random.randint(len(self.MIXTURE_METHODS))
+                            bg_data_one_img = self.generate_background(bg_data[i:i+1], self.MIXTURE_METHODS[mode_idx], n=1)  # (1, 1, 28, 28, 3)
+                            bg_data[i] = bg_data_one_img
 
-                    if self.args.unbiased_data_mode == 'pure':
+                        bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
+
+
+                    elif self.args.unbiased_data_mode == 'pure':
                         color_indices = np.random.randint(10, size=data.shape[0])
                         colors = torch.ByteTensor(np.array(self.COLOUR_MAP)[color_indices])
                         colors = colors.unsqueeze(1).unsqueeze(2)
                         bg_data = bg_data * colors  # (N, 28, 28, 3)
                     elif self.args.unbiased_data_mode in self.args.unbiased_data_mode_choices:
-                        bg_data = self.generate_background(bg_data, 'random_pure', n=1)  # (N, 1, 28, 28, 3)
+                        bg_data = self.generate_background(bg_data, self.args.unbiased_data_mode, n=1)  # (N, 1, 28, 28, 3)
                         bg_data = bg_data.squeeze(1)  # (N, 28, 28, 3)
                     else:
                         raise NotImplementedError
